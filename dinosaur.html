@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>奔跑的哥哥｜自定义主角</title>
+    <style>
+        * {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background: linear-gradient(145deg, #2b2e4a 0%, #1a1c2c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', 'Segoe UI', monospace;
+            margin: 0;
+            padding: 20px;
+        }
+        .game-wrapper {
+            background: #f7f7f0;
+            border-radius: 32px;
+            padding: 20px 25px 25px 25px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-top: 18px;
+            gap: 20px;
+            background: #e0dfcf;
+            padding: 10px 20px;
+            border-radius: 60px;
+        }
+        .score-box {
+            background: #2d2f36;
+            padding: 5px 18px;
+            border-radius: 40px;
+            color: #ffd966;
+            font-weight: bold;
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+        }
+        button {
+            background: #3c5a6f;
+            border: none;
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 6px 24px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        button:hover {
+            background: #2a4557;
+            transform: scale(0.96);
+        }
+        .tip {
+            color: #4e5b41;
+            background: #d8d7c3;
+            padding: 5px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+        }
+        @media (max-width: 550px) {
+            .game-wrapper { padding: 12px 15px; }
+            .score-box { font-size: 1.2rem; padding: 2px 12px; }
+            button { padding: 4px 16px; }
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="game-wrapper">
+        <canvas id="gameCanvas" width="800" height="200"></canvas>
+        <div class="info-bar">
+            <div class="score-box">🏆 <span id="scoreValue">0</span></div>
+            <button id="restartDinoBtn">🐾 重新起跑</button>
+            <div class="tip">空格 / ↑ 跳跃</div>
+        </div>
+    </div>
+    <p style="text-align:center; margin-top:12px; color:#ccc; font-size:12px;"></p>
+</div>
+
+<script>
+    (function(){
+        // ---------- 画布元素 ----------
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // ---------- 图片设置 ----------
+        // ⭐⭐⭐ 重要：把下面 'me.png' 改成你放在仓库里的图片文件名（例如 '我的头像.jpg'）⭐⭐⭐
+        const PLAYER_IMG_SRC = '哥哥.jpg';   // ← 就改这一行！！！
+        let playerImg = new Image();
+        playerImg.src = PLAYER_IMG_SRC;
+        // 如果图片还没加载好，我们先给一个默认占位（不会影响游戏逻辑）
+        let playerImgReady = false;
+        playerImg.onload = () => { playerImgReady = true; };
+        playerImg.onerror = () => { console.warn("图片加载失败，请检查文件名和路径。显示橙色方块"); };
+
+        // ---------- 游戏配置 ----------
+        const GROUND_Y = 170;      // 地面高度(y坐标)
+        const PLAYER_WIDTH = 40;
+        const PLAYER_HEIGHT = 46;
+        const PLAYER_X = 70;        // 固定水平位置
+
+        // 物理参数
+        let yVelocity = 0;
+        let playerY = GROUND_Y - PLAYER_HEIGHT;  // 站在地面
+        let isJumping = false;
+        const GRAVITY = 0.8;
+        const JUMP_POWER = -10;
+
+        // 障碍物
+        let obstacles = [];
+        let frameCounter = 0;
+        let baseSpawnGap = 150;      // 生成间隔帧数
+        let currentGap = 900;
+        let score = 0;
+        let gameOver = false;
+        let animationId = null;
+        let speed = 5;               // 障碍物左移速度（后期可加快）
+        
+        // 辅助标志
+        let hasStarted = false;       // 用于跳跃防止启动前跳跃
+        let gameLoopRunning = false;
+
+        // ---------- 辅助函数 ----------
+        function updateScoreUI(){
+            document.getElementById('scoreValue').innerText = Math.floor(score);
+        }
+
+        // 生成障碍物（简单仙人掌风格）
+        function spawnObstacle(){
+            const obsType = Math.floor(Math.random() * 2); // 0小 1大
+            let width, height;
+            if(obsType === 0){
+                width = 12;
+                height = 20;
+            } else {
+                width = 16;
+                height = 28;
+            }
+            obstacles.push({
+                x: canvas.width,
+                y: GROUND_Y - height,
+                width: width,
+                height: height,
+                type: obsType
+            });
+        }
+
+        // 重置游戏
+        function resetGame(){
+            gameOver = false;
+            score = 0;
+            speed = 5;
+            obstacles = [];
+            frameCounter = 0;
+            currentGap = baseSpawnGap;
+            playerY = GROUND_Y - PLAYER_HEIGHT;
+            yVelocity = 0;
+            isJumping = false;
+            updateScoreUI();
+            // 开局立刻给一个障碍物（避免太空）
+            if(obstacles.length === 0){
+                // 延迟生成第一个，让玩家有准备
+                setTimeout(() => {
+                    if(!gameOver) spawnObstacle();
+                }, 500);
+            }
+        }
+
+        // 碰撞检测 (矩形重叠)
+        function checkCollision(playerRect, obs){
+            return (playerRect.x < obs.x + obs.width &&
+                    playerRect.x + playerRect.width > obs.x &&
+                    playerRect.y < obs.y + obs.height &&
+                    playerRect.y + playerRect.height > obs.y);
+        }
+
+        // 更新逻辑 (每帧)
+        function updateGame(){
+            if(gameOver) return;
+            
+            // 1. 物理跳跃
+            if(isJumping){
+                yVelocity += GRAVITY;
+                playerY += yVelocity;
+                if(playerY >= GROUND_Y - PLAYER_HEIGHT){
+                    playerY = GROUND_Y - PLAYER_HEIGHT;
+                    isJumping = false;
+                    yVelocity = 0;
+                }
+                if(playerY < 0){
+                    playerY = 0;
+                    if(yVelocity < 0) yVelocity = 0;
+                }
+            }
+            
+            // 2. 障碍物移动 & 移除出界
+            for(let i=0; i<obstacles.length; i++){
+                obstacles[i].x -= speed;
+            }
+            obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
+            
+            // 3. 生成新障碍物 (动态调整难度)
+            if(frameCounter >= currentGap){
+                if(!gameOver){
+                    spawnObstacle();
+                    // 动态间隔: 分数越高速度越快，间隔越小
+                    let newGap = Math.max(45, baseSpawnGap - Math.floor(score / 350));
+                    currentGap = newGap;
+                }
+                frameCounter = 0;
+            } else {
+                frameCounter++;
+            }
+            
+            // 4. 分数增加 (随生存时间)
+            score += 0.2;
+            updateScoreUI();
+            // 速度逐渐增加 上限12
+            if(speed < 12){
+                speed = 5 + Math.floor(score / 600);
+            }
+            
+            // 5. 碰撞检测 (玩家矩形)
+            const playerRect = {
+                x: PLAYER_X,
+                y: playerY,
+                width: PLAYER_WIDTH,
+                height: PLAYER_HEIGHT
+            };
+            for(let obs of obstacles){
+                if(checkCollision(playerRect, obs)){
+                    gameOver = true;
+                    break;
+                }
+            }
+        }
+        
+        // ---------- 绘图模块 (精美且可以显示自定义图片) ----------
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 天空渐变
+            const grad = ctx.createLinearGradient(0, 0, 0, GROUND_Y-20);
+            grad.addColorStop(0, '#f9e7b3');
+            grad.addColorStop(1, '#f5d98f');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, GROUND_Y-10);
+            
+            // 地面 + 阴影
+            ctx.fillStyle = '#8b6b42';
+            ctx.fillRect(0, GROUND_Y-4, canvas.width, 6);
+            ctx.fillStyle = '#b87c4f';
+            ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height-GROUND_Y);
+            // 地面纹理
+            ctx.fillStyle = '#d9a066';
+            for(let i=0; i<12; i++){
+                let x = (Date.now()*0.005 + i*70) % canvas.width;
+                ctx.fillRect(x, GROUND_Y-2, 8, 4);
+            }
+            
+            // 绘制障碍物（仙人掌风格）
+            for(let obs of obstacles){
+                let grd = ctx.createLinearGradient(obs.x, obs.y, obs.x+obs.width, obs.y+obs.height);
+                grd.addColorStop(0, '#2f6b2f');
+                grd.addColorStop(1, '#1e4d1e');
+                ctx.fillStyle = grd;
+                ctx.shadowBlur = 2;
+                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+                // 刺刺细节
+                ctx.fillStyle = '#90be6d';
+                for(let i=0;i<3;i++){
+                    ctx.fillRect(obs.x+2+i*3, obs.y-3, 2, 4);
+                }
+            }
+            ctx.shadowBlur = 0;
+            
+            // 绘制主角（自定义图片）
+            if(playerImgReady && playerImg.complete && playerImg.naturalWidth>0){
+                // 用图片绘制，稍微调整比例保持比例
+                try{
+                    ctx.drawImage(playerImg, PLAYER_X, playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
+                }catch(e){ drawFallbackPlayer(); }
+            } else {
+                drawFallbackPlayer();
+            }
+            
+            function drawFallbackPlayer(){
+                // 如果图片没加载好，画一个带帽子的可爱方块
+                ctx.fillStyle = '#f39c12';
+                ctx.fillRect(PLAYER_X, playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
+                ctx.fillStyle = '#e67e22';
+                ctx.fillRect(PLAYER_X+4, playerY-6, 16, 6);
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(PLAYER_X+6, playerY+5, 4, 6);
+                ctx.fillRect(PLAYER_X+14, playerY+5, 4, 6);
+            }
+            
+            // 游戏结束遮罩
+            if(gameOver){
+                ctx.globalAlpha = 0.7;
+                ctx.fillStyle = '#2d2f36';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.globalAlpha = 1;
+                ctx.font = 'bold 20px "Courier New"';
+                ctx.fillStyle = '#f7d44a';
+                ctx.shadowBlur = 0;
+                ctx.fillText('🏁 GAME OVER', canvas.width/2-85, canvas.height/2-15);
+                ctx.font = '14px monospace';
+                ctx.fillStyle = '#eedd99';
+                ctx.fillText('点击「重新起跑」', canvas.width/2-70, canvas.height/2+25);
+            }
+            
+            // 奔跑小提示
+            ctx.font = '12px monospace';
+            ctx.fillStyle = '#70563b';
+            ctx.fillText('⚡ 跑动距离: '+Math.floor(score)+'m', canvas.width-110, 25);
+        }
+        
+        // 主循环
+        function gameLoop(){
+            if(!gameOver){
+                updateGame();
+            }
+            draw();
+            animationId = requestAnimationFrame(gameLoop);
+        }
+        
+        // 跳跃操作
+        function jump(){
+            if(gameOver) return;
+            // 只有在地面上才能跳
+            if(!isJumping && playerY >= GROUND_Y - PLAYER_HEIGHT - 1){
+                isJumping = true;
+                yVelocity = JUMP_POWER;
+            }
+        }
+        
+        // ----- 事件监听 -----
+        function handleKey(e){
+            const key = e.key;
+            if(key === 'ArrowUp' || key === ' ' || key === 'Space' || key === 'ArrowUp'){
+                e.preventDefault();
+                jump();
+            }
+            // 按R键重启
+            if(key === 'r' || key === 'R'){
+                e.preventDefault();
+                resetGame();
+            }
+        }
+        
+        // 触摸/点击canvas跳跃（移动端）
+        function handleCanvasTap(e){
+            e.preventDefault();
+            jump();
+        }
+        
+        // 启动游戏循环和事件
+        function init(){
+            resetGame();
+            window.addEventListener('keydown', handleKey);
+            canvas.addEventListener('click', handleCanvasTap);
+            canvas.addEventListener('touchstart', handleCanvasTap);
+            const restartBtn = document.getElementById('restartDinoBtn');
+            if(restartBtn){
+                restartBtn.addEventListener('click', () => {
+                    resetGame();
+                });
+            }
+            gameLoop();
+        }
+        
+        init();
+    })();
+</script>
+</body>
+</html>
