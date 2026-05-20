@@ -1,41 +1,273 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>我的名片 | bailidashi</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>bailidashi · 个人站点</title>
+    <!-- 引入 Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts：更现代的无衬线字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #f0f7ff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        h1 {
-            color: #c13b1b;
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #0b0f17, #03060c);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            color: #edf2ff;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        /* 主卡片 - 毛玻璃深色质感 */
         .card {
-            background: white;
-            max-width: 500px;
+            max-width: 780px;
+            width: 100%;
             margin: 0 auto;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: rgba(18, 24, 34, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 2.5rem;
+            padding: 2rem 2rem 2.2rem;
+            border: 1px solid rgba(72, 187, 255, 0.12);
+            box-shadow: 0 30px 45px -20px rgba(0, 0, 0, 0.6);
+            transition: all 0.2s ease;
+        }
+
+        /* 头部区域 */
+        .intro {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .avatar-wrapper {
+            flex-shrink: 0;
+        }
+        .avatar {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #2d4059;
+            box-shadow: 0 12px 22px -8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.25s, border-color 0.2s;
+        }
+        .avatar:hover {
+            transform: scale(1.02);
+            border-color: #5f9eff;
+        }
+        .title-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #ffffff, #9bb8ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.2rem;
+        }
+        .title-section .tagline {
+            color: #9cb3d9;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .title-section .desc {
+            margin-top: 0.6rem;
+            font-size: 0.95rem;
+            color: #cddcff;
+            max-width: 85%;
+        }
+
+        /* 技能徽章 */
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin: 1.8rem 0 1.5rem;
+        }
+        .skill-badge {
+            background: #1e2a3e;
+            border-radius: 40px;
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #bdd3ff;
+            backdrop-filter: blur(4px);
+            border: 1px solid #2d4059;
+            transition: 0.1s;
+        }
+        .skill-badge i {
+            margin-right: 6px;
+            font-size: 0.75rem;
+            color: #7aa9ff;
+        }
+
+        /* 项目入口 (游戏卡片) */
+        .projects {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            margin: 2rem 0 1.8rem;
+        }
+        .project-card {
+            background: #11171fcc;
+            backdrop-filter: blur(4px);
+            flex: 1;
+            min-width: 160px;
+            border-radius: 1.5rem;
+            padding: 1rem 1.2rem;
+            border: 1px solid #2a3748;
+            transition: all 0.2s;
+        }
+        .project-card:hover {
+            border-color: #4f7eff;
+            transform: translateY(-3px);
+            background: #17212bcc;
+        }
+        .project-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .project-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        .project-desc {
+            font-size: 0.75rem;
+            color: #99b0e0;
+            margin-bottom: 1rem;
+        }
+        .project-link {
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #94b4ff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: gap 0.2s;
+        }
+        .project-link:hover {
+            color: white;
+            gap: 10px;
+        }
+
+        /* 联系信息 + 分割线 */
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, #2a3a50, #4e6b8f, #2a3a50);
+            margin: 1.8rem 0 1.2rem;
+        }
+        .contact {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #b7c9f0;
+        }
+        .contact a {
+            color: #97b5ff;
+            text-decoration: none;
+            transition: 0.1s;
+        }
+        .contact a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        .footer-quote {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6b7f9f;
+            margin-top: 1.4rem;
+            letter-spacing: 0.3px;
+        }
+        i {
+            margin-right: 4px;
+        }
+        @media (max-width: 620px) {
+            body { padding: 1rem; }
+            .card { padding: 1.5rem; }
+            .intro { flex-direction: column; align-items: center; text-align: center; gap: 1rem; }
+            .title-section .desc { max-width: 100%; }
+            .projects { flex-direction: column; }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-    <h1>你好，我是 百裏</h1>
-    <img src="我的头像.jpg" width="120" style="border-radius: 50%; display: block; margin: 10px auto;">
-    <p>重庆文理学院 大一</p>
-    <p>正在学 Git | 喜欢折腾 | 家教小能手</p>
-    <p>🎯 目标：把技能树点亮</p>
-    <hr>
-    <p>📧 邮箱：3154997545@qq.com</p>
-    <p>🐙 <a href="https://github.com/bailidashi" target="_blank">我的GitHub</a></p>
-    <p>🎮 <a href="snake.html" target="_blank">玩贪吃蛇</a></p>
-    <p>🦖 <a href="dinosaur.html" target="_blank">奔跑的哥哥（自定义版）</a></p>
+
+<div class="card">
+    <!-- 头部：头像 + 简介 -->
+    <div class="intro">
+        <div class="avatar-wrapper">
+            <!-- 🔽 把 "avatar.jpg" 改成你真实的头像文件名（比如 "我的头像.jpg"） -->
+            <img src="我的头像.jpg" alt="百裏" class="avatar" onerror="this.src='https://placehold.co/110x110?text=avatar'">
+        </div>
+        <div class="title-section">
+            <h1>百裏</h1>
+            <div class="tagline"><i class="fas fa-microchip"></i> 重庆文理学院 · 大一</div>
+            <div class="desc">
+                嵌入式入门 / 三菱PLC探索 / Git版本控制 · 用代码记录成长。
+            </div>
+        </div>
     </div>
+
+    <!-- 技能标签 -->
+    <div class="skills">
+        <span class="skill-badge"><i class="fas fa-microcontroller"></i>  ESP32/STM32</span>
+        <span class="skill-badge"><i class="fas fa-industry"></i>  三菱GX2</span>
+        <span class="skill-badge"><i class="fab fa-git-alt"></i>  Git基础</span>
+        <span class="skill-badge"><i class="fas fa-chalkboard-user"></i>  家教经验</span>
+        <span class="skill-badge"><i class="fas fa-cube"></i>  SolidWorks/UG</span>
+    </div>
+
+    <!-- 项目卡片（游戏入口 + GitHub） -->
+    <div class="projects">
+        <div class="project-card">
+            <div class="project-icon">🐍</div>
+            <div class="project-title">贪吃蛇·经典</div>
+            <div class="project-desc">怀旧小游戏，键盘控制方向</div>
+            <a href="snake.html" class="project-link">开始游戏 →</a>
+        </div>
+        <div class="project-card">
+            <div class="project-icon">🏃‍♂️</div>
+            <div class="project-title">自定义跑酷</div>
+            <div class="project-desc">主角替换成自己的图片，障碍物躲避</div>
+            <a href="dinosaur.html" class="project-link">立即跑酷 →</a>
+        </div>
+        <div class="project-card">
+            <div class="project-icon"><i class="fab fa-github"></i></div>
+            <div class="project-title">GitHub 仓库</div>
+            <div class="project-desc">开源项目 / 学习记录</div>
+            <a href="https://github.com/bailidashi" class="project-link" target="_blank">访问主页 →</a>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- 联系方式 + 座右铭 -->
+    <div class="contact">
+        <span><i class="far fa-envelope"></i> 3154997545@qq.com</span>
+        <span><i class="fab fa-qq"></i> QQ: 3154997545</span>
+        <span><i class="fas fa-map-marker-alt"></i> 在路上 · 持续迭代</span>
+    </div>
+    <div class="footer-quote">
+        “学无止境。
+    </div>
+</div>
+
 </body>
 </html>
