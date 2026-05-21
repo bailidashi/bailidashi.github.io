@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>奔跑的哥哥｜手机/电脑</title>
+    <title>奔跑的哥哥｜手机小屏版</title>
     <style>
         * {
             user-select: none;
@@ -17,21 +17,21 @@
             align-items: center;
             font-family: 'Courier New', 'Segoe UI', monospace;
             margin: 0;
-            padding: 20px;
+            padding: 12px;
         }
         .game-wrapper {
             background: #f7f7f0;
-            border-radius: 32px;
-            padding: 20px 25px 25px 25px;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+            border-radius: 28px;
+            padding: 15px 18px 20px 18px;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.4);
         }
         canvas {
             display: block;
             margin: 0 auto;
-            border-radius: 20px;
+            border-radius: 16px;
             width: 100%;
             height: auto;
-            max-width: 800px;
+            max-width: 400px;
             cursor: pointer;
             touch-action: manipulation;
         }
@@ -39,27 +39,27 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 18px;
-            gap: 20px;
+            margin-top: 14px;
+            gap: 12px;
             background: #e0dfcf;
-            padding: 10px 20px;
-            border-radius: 60px;
+            padding: 8px 16px;
+            border-radius: 50px;
             flex-wrap: wrap;
         }
         .score-box {
             background: #2d2f36;
-            padding: 5px 18px;
+            padding: 4px 14px;
             border-radius: 40px;
             color: #ffd966;
             font-weight: bold;
-            font-size: 1.6rem;
+            font-size: 1.2rem;
         }
         button {
             background: #3c5a6f;
             border: none;
             font-weight: bold;
-            font-size: 1rem;
-            padding: 8px 24px;
+            font-size: 0.85rem;
+            padding: 6px 18px;
             border-radius: 40px;
             color: white;
             cursor: pointer;
@@ -67,35 +67,36 @@
         .jump-btn {
             background: #f39c12;
             color: #1e2a32;
-            font-size: 1.3rem;
-            padding: 8px 30px;
+            font-size: 1rem;
+            padding: 6px 20px;
         }
         .tip {
             color: #4e5b41;
             background: #d8d7c3;
-            padding: 5px 16px;
+            padding: 4px 12px;
             border-radius: 50px;
-            font-size: 0.85rem;
+            font-size: 0.7rem;
         }
-        @media (max-width: 550px) {
-            .game-wrapper { padding: 12px 15px; }
-            .score-box { font-size: 1.2rem; }
-            .jump-btn { font-size: 1rem; padding: 6px 20px; }
+        @media (max-width: 450px) {
+            .game-wrapper { padding: 10px 12px; }
+            .score-box { font-size: 1rem; }
+            .jump-btn { font-size: 0.8rem; padding: 5px 16px; }
+            .tip { font-size: 0.6rem; }
         }
     </style>
 </head>
 <body>
 <div>
     <div class="game-wrapper">
-        <canvas id="gameCanvas" width="800" height="200"></canvas>
+        <canvas id="gameCanvas" width="400" height="100"></canvas>
         <div class="info-bar">
             <div class="score-box">🏆 <span id="scoreValue">0</span></div>
-            <button id="restartDinoBtn">🐾 重新起跑</button>
+            <button id="restartDinoBtn">🐾 重来</button>
             <button id="jumpBtn" class="jump-btn">🦘 跳跃</button>
             <div class="tip">点击画布 / 跳跃按钮</div>
         </div>
     </div>
-    <p style="text-align:center; margin-top:12px; color:#ccc; font-size:12px;">⭐ 主角是你自己的图片</p>
+    <p style="text-align:center; margin-top:10px; color:#ccc; font-size:11px;">⭐ 主角是最爱的哥哥</p>
 </div>
 
 <script>
@@ -103,33 +104,34 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // ---------- 替换成你的图片 ----------
-        const PLAYER_IMG_SRC = '哥哥.jpg';   // 改成你的图片文件名
+        // 替换成你的图片文件名
+        const PLAYER_IMG_SRC = '哥哥.jpg';   // 修改为你自己的图片
         let playerImg = new Image();
         playerImg.src = PLAYER_IMG_SRC;
         let playerImgReady = false;
         playerImg.onload = () => { playerImgReady = true; };
         playerImg.onerror = () => { console.warn("图片加载失败，显示橙色方块"); };
 
-        const GROUND_Y = 160;
-        const PLAYER_WIDTH = 28;
-        const PLAYER_HEIGHT = 32;
-        const PLAYER_X = 70;
+        // 小屏版参数 (画布400x100)
+        const GROUND_Y = 82;          // 地面高度
+        const PLAYER_WIDTH = 18;
+        const PLAYER_HEIGHT = 20;
+        const PLAYER_X = 40;
 
         let yVelocity = 0;
         let playerY = GROUND_Y - PLAYER_HEIGHT;
         let isJumping = false;
-        const GRAVITY = 0.8;
-        const JUMP_POWER = -10;
+        const GRAVITY = 0.6;
+        const JUMP_POWER = -7;
 
         let obstacles = [];
         let frameCounter = 0;
-        let baseSpawnGap = 120;
-        let currentGap = 90;
+        let baseSpawnGap = 110;
+        let currentGap = 85;
         let score = 0;
         let gameOver = false;
         let animationId = null;
-        let speed = 5;
+        let speed = 3.5;
 
         function updateScoreUI(){
             document.getElementById('scoreValue').innerText = Math.floor(score);
@@ -139,9 +141,11 @@
             const obsType = Math.floor(Math.random() * 2);
             let width, height;
             if(obsType === 0){
-                width = 12; height = 20;
+                width = 7;
+                height = 12;
             } else {
-                width = 16; height = 28;
+                width = 10;
+                height = 16;
             }
             obstacles.push({
                 x: canvas.width,
@@ -154,7 +158,7 @@
         function resetGame(){
             gameOver = false;
             score = 0;
-            speed = 5;
+            speed = 3.5;
             obstacles = [];
             frameCounter = 0;
             currentGap = baseSpawnGap;
@@ -193,7 +197,7 @@
             if(frameCounter >= currentGap){
                 if(!gameOver){
                     spawnObstacle();
-                    let newGap = Math.max(50, baseSpawnGap - Math.floor(score / 400));
+                    let newGap = Math.max(45, baseSpawnGap - Math.floor(score / 400));
                     currentGap = newGap;
                 }
                 frameCounter = 0;
@@ -202,8 +206,8 @@
             }
             score += 0.2;
             updateScoreUI();
-            if(speed < 12){
-                speed = 5 + Math.floor(score / 600);
+            if(speed < 8){
+                speed = 3.5 + Math.floor(score / 700);
             }
             const playerRect = {
                 x: PLAYER_X,
@@ -221,20 +225,23 @@
 
         function draw(){
             ctx.clearRect(0,0,canvas.width,canvas.height);
-            const grad = ctx.createLinearGradient(0,0,0,GROUND_Y-20);
+            // 天空
+            const grad = ctx.createLinearGradient(0,0,0,GROUND_Y-10);
             grad.addColorStop(0,'#f9e7b3');
             grad.addColorStop(1,'#f5d98f');
             ctx.fillStyle = grad;
-            ctx.fillRect(0,0,canvas.width,GROUND_Y-10);
+            ctx.fillRect(0,0,canvas.width,GROUND_Y-8);
+            // 地面
             ctx.fillStyle = '#8b6b42';
-            ctx.fillRect(0,GROUND_Y-4,canvas.width,6);
+            ctx.fillRect(0,GROUND_Y-3,canvas.width,4);
             ctx.fillStyle = '#b87c4f';
             ctx.fillRect(0,GROUND_Y,canvas.width,canvas.height-GROUND_Y);
             ctx.fillStyle = '#d9a066';
-            for(let i=0;i<12;i++){
-                let x = (Date.now()*0.005 + i*70) % canvas.width;
-                ctx.fillRect(x,GROUND_Y-2,8,4);
+            for(let i=0;i<8;i++){
+                let x = (Date.now()*0.008 + i*50) % canvas.width;
+                ctx.fillRect(x,GROUND_Y-2,5,3);
             }
+            // 障碍物
             for(let obs of obstacles){
                 let grd = ctx.createLinearGradient(obs.x, obs.y, obs.x+obs.width, obs.y+obs.height);
                 grd.addColorStop(0,'#2f6b2f');
@@ -242,10 +249,11 @@
                 ctx.fillStyle = grd;
                 ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
                 ctx.fillStyle = '#90be6d';
-                for(let i=0;i<3;i++){
-                    ctx.fillRect(obs.x+2+i*3, obs.y-3, 2, 4);
+                for(let i=0;i<2;i++){
+                    ctx.fillRect(obs.x+2+i*3, obs.y-2, 2, 3);
                 }
             }
+            // 主角图片
             if(playerImgReady && playerImg.complete && playerImg.naturalWidth>0){
                 try{
                     ctx.drawImage(playerImg, PLAYER_X, playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -257,26 +265,26 @@
                 ctx.fillStyle = '#f39c12';
                 ctx.fillRect(PLAYER_X, playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
                 ctx.fillStyle = '#e67e22';
-                ctx.fillRect(PLAYER_X+4, playerY-6, 16, 6);
+                ctx.fillRect(PLAYER_X+4, playerY-4, 10, 4);
                 ctx.fillStyle = '#2c3e50';
-                ctx.fillRect(PLAYER_X+6, playerY+5, 4, 6);
-                ctx.fillRect(PLAYER_X+14, playerY+5, 4, 6);
+                ctx.fillRect(PLAYER_X+4, playerY+4, 3, 4);
+                ctx.fillRect(PLAYER_X+11, playerY+4, 3, 4);
             }
             if(gameOver){
                 ctx.globalAlpha = 0.7;
                 ctx.fillStyle = '#2d2f36';
                 ctx.fillRect(0,0,canvas.width,canvas.height);
                 ctx.globalAlpha = 1;
-                ctx.font = 'bold 20px "Courier New"';
+                ctx.font = 'bold 14px "Courier New"';
                 ctx.fillStyle = '#f7d44a';
-                ctx.fillText('🏁 GAME OVER', canvas.width/2-85, canvas.height/2-15);
-                ctx.font = '14px monospace';
+                ctx.fillText('GAME OVER', canvas.width/2-45, canvas.height/2);
+                ctx.font = '10px monospace';
                 ctx.fillStyle = '#eedd99';
-                ctx.fillText('点击「重新起跑」', canvas.width/2-70, canvas.height/2+25);
+                ctx.fillText('点击「重来」', canvas.width/2-40, canvas.height/2+20);
             }
-            ctx.font = '12px monospace';
+            ctx.font = '9px monospace';
             ctx.fillStyle = '#70563b';
-            ctx.fillText('⚡ 跑动距离: '+Math.floor(score)+'m', canvas.width-110, 25);
+            ctx.fillText('距离: '+Math.floor(score)+'m', canvas.width-65, 18);
         }
 
         function gameLoop(){
