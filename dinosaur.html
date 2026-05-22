@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>奔跑的哥哥｜手机小屏版</title>
+    <title>奔跑的哥哥｜坤坤跑酷</title>
     <style>
         * {
             user-select: none;
@@ -96,62 +96,79 @@
             <div class="tip">点击画布 / 跳跃按钮</div>
         </div>
     </div>
-    <p style="text-align:center; margin-top:10px; color:#ccc; font-size:11px;">⭐ 主角是最爱的哥哥</p>
+    <p style="text-align:center; margin-top:10px; color:#ccc; font-size:11px;">⭐ 主角自定义图片</p>
 </div>
+
+<!-- 背景音乐（循环） -->
+<audio id="bgmAudio" src="bgm.mp3" loop preload="auto"></audio>
+<!-- 跳跃音效（动态播放） -->
+<audio id="jumpAudio" src="jump.mp3" preload="auto"></audio>
 
 <script>
     (function(){
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // 替换成你的图片文件名
-        const PLAYER_IMG_SRC = '哥哥.jpg';   // 修改为你自己的图片
+        // ---------- 请修改为你自己的图片文件名 ----------
+        const PLAYER_IMG_SRC = 'kun.jpg';   // 例如 '哥哥.jpg' 或 'kun.png'
         let playerImg = new Image();
         playerImg.src = PLAYER_IMG_SRC;
         let playerImgReady = false;
         playerImg.onload = () => { playerImgReady = true; };
         playerImg.onerror = () => { console.warn("图片加载失败，显示橙色方块"); };
 
-        // 小屏版参数 (画布400x100)
-        const GROUND_Y = 82;          // 地面高度
-        const PLAYER_WIDTH = 18;
-        const PLAYER_HEIGHT = 20;
+        // ---------- 游戏参数（跳更高 + 篮球障碍物）----------
+        const GROUND_Y = 82;          // 地面高度（像素）
+        const PLAYER_WIDTH = 40;      // 角色宽度（调大）
+        const PLAYER_HEIGHT = 48;     // 角色高度（调大）
         const PLAYER_X = 40;
 
         let yVelocity = 0;
         let playerY = GROUND_Y - PLAYER_HEIGHT;
         let isJumping = false;
         const GRAVITY = 0.6;
-        const JUMP_POWER = -7;
+        const JUMP_POWER = -14;       // 跳更高！
 
-        let obstacles = [];
+        let obstacles = [];            // 障碍物数组（篮球）
         let frameCounter = 0;
-        let baseSpawnGap = 110;
-        let currentGap = 85;
+        let baseSpawnGap = 120;        // 生成间隔（越大越稀疏）
+        let currentGap = 100;
         let score = 0;
         let gameOver = false;
         let animationId = null;
         let speed = 3.5;
 
+        // ---------- 背景音乐自动播放（需要用户首次交互）----------
+        const bgmAudio = document.getElementById('bgmAudio');
+        const jumpAudio = document.getElementById('jumpAudio');
+        // 尝试自动播放（浏览器可能限制，但添加一个“点击游戏区启动音乐”的监听更可靠）
+        function tryAutoPlay() {
+            bgmAudio.play().catch(e => console.log("自动播放被阻止，点击画布后播放"));
+        }
+        // 用户首次点击画布时启动背景音乐
+        function enableAudio() {
+            bgmAudio.play().catch(e => console.log);
+            canvas.removeEventListener('click', enableAudio);
+            canvas.removeEventListener('touchstart', enableAudio);
+        }
+        canvas.addEventListener('click', enableAudio);
+        canvas.addEventListener('touchstart', enableAudio);
+        tryAutoPlay();
+
+        // ---------- 辅助函数 ----------
         function updateScoreUI(){
             document.getElementById('scoreValue').innerText = Math.floor(score);
         }
 
+        // 生成篮球障碍物（圆形）
         function spawnObstacle(){
-            const obsType = Math.floor(Math.random() * 2);
-            let width, height;
-            if(obsType === 0){
-                width = 7;
-                height = 12;
-            } else {
-                width = 10;
-                height = 16;
-            }
+            const ballSize = 14;   // 篮球直径（像素）
             obstacles.push({
                 x: canvas.width,
-                y: GROUND_Y - height,
-                width: width,
-                height: height,
+                y: GROUND_Y - ballSize,
+                width: ballSize,
+                height: ballSize,
+                type: 'ball'
             });
         }
 
@@ -172,14 +189,20 @@
         }
 
         function checkCollision(playerRect, obs){
-            return (playerRect.x < obs.x + obs.width &&
-                    playerRect.x + playerRect.width > obs.x &&
-                    playerRect.y < obs.y + obs.height &&
-                    playerRect.y + playerRect.height > obs.y);
+            // 圆形碰撞检测（篮球是圆形，玩家是矩形，做矩形与圆形的近似碰撞）
+            const circleX = obs.x + obs.width/2;
+            const circleY = obs.y + obs.height/2;
+            const radius = obs.width/2;
+            const closestX = Math.max(playerRect.x, Math.min(circleX, playerRect.x + playerRect.width));
+            const closestY = Math.max(playerRect.y, Math.min(circleY, playerRect.y + playerRect.height));
+            const dx = circleX - closestX;
+            const dy = circleY - closestY;
+            return (dx * dx + dy * dy) < radius * radius;
         }
 
         function updateGame(){
             if(gameOver) return;
+            // 跳跃物理
             if(isJumping){
                 yVelocity += GRAVITY;
                 playerY += yVelocity;
@@ -190,25 +213,29 @@
                 }
                 if(playerY < 0) playerY = 0;
             }
+            // 障碍物移动
             for(let i=0;i<obstacles.length;i++){
                 obstacles[i].x -= speed;
             }
             obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
+            // 生成新障碍物
             if(frameCounter >= currentGap){
                 if(!gameOver){
                     spawnObstacle();
-                    let newGap = Math.max(45, baseSpawnGap - Math.floor(score / 400));
+                    let newGap = Math.max(50, baseSpawnGap - Math.floor(score / 400));
                     currentGap = newGap;
                 }
                 frameCounter = 0;
             } else {
                 frameCounter++;
             }
+            // 加分 & 加速
             score += 0.2;
             updateScoreUI();
             if(speed < 8){
                 speed = 3.5 + Math.floor(score / 700);
             }
+            // 碰撞检测（圆形与矩形）
             const playerRect = {
                 x: PLAYER_X,
                 y: playerY,
@@ -223,6 +250,7 @@
             }
         }
 
+        // ---------- 绘图模块 ----------
         function draw(){
             ctx.clearRect(0,0,canvas.width,canvas.height);
             // 天空
@@ -241,17 +269,26 @@
                 let x = (Date.now()*0.008 + i*50) % canvas.width;
                 ctx.fillRect(x,GROUND_Y-2,5,3);
             }
-            // 障碍物
+            // 画篮球障碍物
             for(let obs of obstacles){
-                let grd = ctx.createLinearGradient(obs.x, obs.y, obs.x+obs.width, obs.y+obs.height);
-                grd.addColorStop(0,'#2f6b2f');
-                grd.addColorStop(1,'#1e4d1e');
-                ctx.fillStyle = grd;
-                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-                ctx.fillStyle = '#90be6d';
-                for(let i=0;i<2;i++){
-                    ctx.fillRect(obs.x+2+i*3, obs.y-2, 2, 3);
-                }
+                // 篮球底色
+                ctx.fillStyle = '#d97a2b';
+                ctx.beginPath();
+                ctx.arc(obs.x + obs.width/2, obs.y + obs.height/2, obs.width/2, 0, Math.PI*2);
+                ctx.fill();
+                // 黑色弧线（篮球条纹）
+                ctx.beginPath();
+                ctx.arc(obs.x + obs.width/2, obs.y + obs.height/2, obs.width/2 - 2, 0, Math.PI*2);
+                ctx.strokeStyle = '#2c2c2c';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                // 两条交叉弧线
+                ctx.beginPath();
+                ctx.moveTo(obs.x + obs.width*0.3, obs.y + obs.height*0.3);
+                ctx.lineTo(obs.x + obs.width*0.7, obs.y + obs.height*0.7);
+                ctx.moveTo(obs.x + obs.width*0.7, obs.y + obs.height*0.3);
+                ctx.lineTo(obs.x + obs.width*0.3, obs.y + obs.height*0.7);
+                ctx.stroke();
             }
             // 主角图片
             if(playerImgReady && playerImg.complete && playerImg.naturalWidth>0){
@@ -270,6 +307,7 @@
                 ctx.fillRect(PLAYER_X+4, playerY+4, 3, 4);
                 ctx.fillRect(PLAYER_X+11, playerY+4, 3, 4);
             }
+            // 游戏结束遮罩
             if(gameOver){
                 ctx.globalAlpha = 0.7;
                 ctx.fillStyle = '#2d2f36';
@@ -296,6 +334,9 @@
         function jump(){
             if(gameOver) return;
             if(!isJumping && playerY >= GROUND_Y - PLAYER_HEIGHT - 1){
+                // 播放跳跃音效
+                jumpAudio.currentTime = 0;   // 重置播放位置，避免重叠时卡顿
+                jumpAudio.play().catch(e=>console.log);
                 isJumping = true;
                 yVelocity = JUMP_POWER;
             }
@@ -318,8 +359,8 @@
             window.addEventListener('keydown', handleKey);
             canvas.addEventListener('click', (e) => { e.preventDefault(); jump(); });
             canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); });
-            document.getElementById('restartDinoBtn').addEventListener('click', resetGame);
-            document.getElementById('jumpBtn').addEventListener('click', () => { jump(); });
+            document.getElementById('restartDinoBtn').addEventListener('click', () => resetGame());
+            document.getElementById('jumpBtn').addEventListener('click', () => jump());
             gameLoop();
         }
         init();
