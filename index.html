@@ -14,7 +14,7 @@
         }
 
         body {
-            background: radial-gradient(circle at 10% 20%, #0b0f17, #03060c);
+            background: #03060c;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
             color: #edf2ff;
             line-height: 1.5;
@@ -23,18 +23,42 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
 
         .card {
+            position: relative;
+            z-index: 1;
             max-width: 780px;
             width: 100%;
             margin: 0 auto;
             background: rgba(18, 24, 34, 0.75);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border-radius: 2.5rem;
             padding: 2rem 2rem 2.2rem;
-            border: 1px solid rgba(72, 187, 255, 0.12);
-            box-shadow: 0 30px 45px -20px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(72, 187, 255, 0.15);
+            box-shadow:
+                0 30px 45px -20px rgba(0, 0, 0, 0.6),
+                0 0 60px -10px rgba(72, 150, 255, 0.08);
+            transition: box-shadow 0.5s, border-color 0.5s;
+        }
+        .card:hover {
+            border-color: rgba(100, 180, 255, 0.35);
+            box-shadow:
+                0 30px 45px -20px rgba(0, 0, 0, 0.6),
+                0 0 80px -5px rgba(72, 150, 255, 0.18);
         }
 
         .intro {
@@ -54,11 +78,12 @@
             border-radius: 50%;
             border: 2px solid #2d4059;
             box-shadow: 0 12px 22px -8px rgba(0, 0, 0, 0.5);
-            transition: transform 0.25s, border-color 0.2s;
+            transition: transform 0.25s, border-color 0.2s, box-shadow 0.2s;
         }
         .avatar:hover {
-            transform: scale(1.02);
+            transform: scale(1.04);
             border-color: #5f9eff;
+            box-shadow: 0 12px 30px -6px rgba(95, 158, 255, 0.3);
         }
         .title-section h1 {
             font-size: 2rem;
@@ -98,11 +123,32 @@
             color: #bdd3ff;
             backdrop-filter: blur(4px);
             border: 1px solid #2d4059;
+            opacity: 0;
+            transform: translateY(12px);
+            animation: fadeInUp 0.5s ease forwards;
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
+        .skill-badge:hover {
+            background: #243352;
+            border-color: #4f7eff;
+            box-shadow: 0 0 16px rgba(79, 126, 255, 0.25);
+        }
+        .skill-badge:nth-child(1) { animation-delay: 0.1s; }
+        .skill-badge:nth-child(2) { animation-delay: 0.2s; }
+        .skill-badge:nth-child(3) { animation-delay: 0.3s; }
+        .skill-badge:nth-child(4) { animation-delay: 0.4s; }
+        .skill-badge:nth-child(5) { animation-delay: 0.5s; }
         .skill-badge i {
             margin-right: 6px;
             font-size: 0.75rem;
             color: #7aa9ff;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* 互动区域（游戏+留言） */
@@ -130,20 +176,42 @@
             background: #11171fcc;
             backdrop-filter: blur(4px);
             flex: 1;
-            min-width: 160px;
+            min-width: 150px;
             border-radius: 1.5rem;
             padding: 1rem 1.2rem;
             border: 1px solid #2a3748;
-            transition: all 0.2s;
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(79, 150, 255, 0.08) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.35s;
+            pointer-events: none;
         }
         .project-card:hover {
             border-color: #4f7eff;
-            transform: translateY(-3px);
+            transform: translateY(-4px);
             background: #17212bcc;
+            box-shadow: 0 8px 28px rgba(79, 126, 255, 0.15), 0 0 0 1px rgba(79, 126, 255, 0.3) inset;
+        }
+        .project-card:hover::before {
+            opacity: 1;
         }
         .project-icon {
             font-size: 2rem;
             margin-bottom: 0.5rem;
+            transition: transform 0.3s;
+        }
+        .project-card:hover .project-icon {
+            transform: scale(1.1);
         }
         .project-title {
             font-weight: 700;
@@ -163,7 +231,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: gap 0.2s;
+            transition: gap 0.2s, color 0.2s;
         }
         .project-link:hover {
             color: white;
@@ -223,8 +291,11 @@
 </head>
 <body>
 
+<!-- 粒子星空背景 -->
+<canvas id="particleCanvas"></canvas>
+
 <div class="card">
-    <!-- 头部区域不变 -->
+    <!-- 头部区域 -->
     <div class="intro">
         <div class="avatar-wrapper">
             <img src="我的头像.jpg" alt="百裏" class="avatar" onerror="this.src='https://placehold.co/110x110?text=avatar'">
@@ -268,6 +339,12 @@
                 <a href="dinosaur.html" class="project-link">立即跑酷 →</a>
             </div>
             <div class="project-card">
+                <div class="project-icon">🧩</div>
+                <div class="project-title">俄罗斯方块</div>
+                <div class="project-desc">经典消除，挑战高分</div>
+                <a href="tetris.html" class="project-link">开始挑战 →</a>
+            </div>
+            <div class="project-card">
                 <div class="project-icon"><i class="fab fa-github"></i></div>
                 <div class="project-title">GitHub 仓库</div>
                 <div class="project-desc">开源项目 / 学习记录</div>
@@ -275,7 +352,7 @@
             </div>
         </div>
 
-        <!-- 评论区（白色主题） -->
+        <!-- 评论区 -->
         <div class="comments-container">
             <script src="https://utteranc.es/client.js"
                     repo="bailidashi/bailidashi.github.io"
@@ -298,9 +375,82 @@
         <span><i class="fas fa-map-marker-alt"></i> 在路上 · 持续迭代</span>
     </div>
     <div class="footer-quote">
-        “学无止境。”
+        "学无止境。"
     </div>
 </div>
+
+<script>
+    // 粒子星空背景
+    (function(){
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const PARTICLE_COUNT = 80;
+        let w, h;
+
+        function resize(){
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        for(let i = 0; i < PARTICLE_COUNT; i++){
+            particles.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                r: Math.random() * 1.8 + 0.5,
+                alpha: Math.random() * 0.6 + 0.2,
+                twinkleSpeed: Math.random() * 0.02 + 0.005,
+                twinkleOffset: Math.random() * Math.PI * 2
+            });
+        }
+
+        function draw(){
+            ctx.clearRect(0, 0, w, h);
+
+            // 连线
+            for(let i = 0; i < particles.length; i++){
+                for(let j = i + 1; j < particles.length; j++){
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if(dist < 120){
+                        ctx.strokeStyle = `rgba(100,160,255,${0.08 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // 粒子
+            const now = Date.now();
+            for(let p of particles){
+                const flicker = Math.sin(now * p.twinkleSpeed + p.twinkleOffset) * 0.3 + 0.7;
+                ctx.fillStyle = `rgba(140,190,255,${p.alpha * flicker})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fill();
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if(p.x < -10) p.x = w + 10;
+                if(p.x > w + 10) p.x = -10;
+                if(p.y < -10) p.y = h + 10;
+                if(p.y > h + 10) p.y = -10;
+            }
+
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+</script>
 
 </body>
 </html>
