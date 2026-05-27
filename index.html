@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>百裏 · 极客玻璃</title>
+    <title>百裏 · 学无止境</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,252 +14,295 @@
         }
 
         body {
-            background: #eef2f8;
+            background: #07090e;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            color: #1c2a3a;
-            line-height: 1.5;
-            padding: 2rem 1rem;
-            position: relative;
-            min-height: 100vh;
+            color: #eef2ff;
+            overflow-x: hidden;
         }
 
-        /* 冷调渐变背景（无彩虹） */
-        body::before {
-            content: "";
-            position: fixed;
-            top: -20%;
-            left: -20%;
-            width: 140%;
-            height: 140%;
-            background: radial-gradient(circle at 30% 40%, rgba(70, 130, 200, 0.08), rgba(200, 220, 250, 0.02));
-            z-index: 0;
-            pointer-events: none;
+        .scroll-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
         }
 
-        /* 极简网格（细线，低对比） */
-        .grid-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(80, 120, 160, 0.1) 0.5px, transparent 0.5px),
-                linear-gradient(90deg, rgba(80, 120, 160, 0.1) 0.5px, transparent 0.5px);
-            background-size: 32px 32px;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* 主卡片 – 冷色玻璃，锐利边缘 */
-        .card {
-            background: rgba(255, 255, 255, 0.72);
-            backdrop-filter: blur(20px);
-            border-radius: 2rem;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05), 0 0 0 0.5px rgba(255, 255, 255, 0.6) inset;
-            transition: box-shadow 0.3s ease, transform 0.2s;
-        }
-        .card:hover {
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1), 0 0 0 0.5px rgba(255, 255, 255, 1) inset;
-        }
-
-        /* 头部 – 干净利落 */
-        .intro {
+        .section {
+            height: 100vh;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
             display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 2rem;
-            flex-wrap: wrap;
+            padding: 2rem;
+            position: relative;
+            background: radial-gradient(circle at 20% 30%, rgba(230, 76, 76, 0.02), transparent 70%);
+            border-bottom: 1px solid rgba(230, 76, 76, 0.1);
+        }
+
+        .section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(45deg, rgba(230, 76, 76, 0.02) 0px, rgba(230, 76, 76, 0.02) 1px, transparent 1px, transparent 16px);
+            pointer-events: none;
+        }
+
+        .section-content {
+            max-width: 1080px;
+            width: 100%;
+            margin: 0 auto;
+            transition: all 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+        }
+
+        .section.in-view .section-content {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* 标题风格 */
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #e64c4c;
+            letter-spacing: 4px;
             margin-bottom: 2rem;
+            text-transform: uppercase;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            background: rgba(230, 76, 76, 0.1);
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* 点缀文案 - 极客文艺 */
+        .caption {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: #a0aabf;
+            opacity: 0.6;
+            letter-spacing: 0.5px;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        .caption-left {
+            text-align: left;
+            margin-top: 2rem;
+            border-left: 1px solid rgba(230,76,76,0.3);
+            padding-left: 1rem;
+        }
+        .tech-fingerprint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: #4a5568;
+            opacity: 0.5;
+            z-index: 10;
+        }
+        .status-badge {
+            display: inline-block;
+            background: rgba(230,76,76,0.15);
+            border: 1px solid rgba(230,76,76,0.3);
+            border-radius: 40px;
+            padding: 0.1rem 0.7rem;
+            font-size: 0.65rem;
+            font-family: monospace;
+            margin-left: 0.8rem;
+            vertical-align: middle;
+        }
+
+        /* 个人介绍屏 */
+        .intro-wrap {
+            text-align: center;
         }
         .avatar {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid white;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 1.5rem;
+            border: 2px solid #e64c4c;
+            box-shadow: 0 0 20px rgba(230, 76, 76, 0.3), 0 10px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
         .avatar:hover {
             transform: scale(1.02);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 0 28px rgba(230, 76, 76, 0.5);
         }
-        .title-section h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1e3b5c;
-            letter-spacing: -0.3px;
-            margin-bottom: 0.2rem;
+        .intro-wrap h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #e64c4c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
         }
-        .tagline {
-            color: #4a6a8a;
-            font-weight: 500;
-            font-size: 0.85rem;
+        .en-tagline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #a0aabf;
+            letter-spacing: 4px;
+            margin-bottom: 1rem;
+            background: rgba(255,255,255,0.03);
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
         }
-        .desc {
-            color: #2c4e6e;
-            margin-top: 0.5rem;
+        .intro-wrap .tagline {
             font-size: 0.9rem;
+            color: #cbd5e6;
+            margin-bottom: 0.5rem;
+        }
+        .intro-wrap .desc {
+            font-size: 0.9rem;
+            color: #9aaec9;
+            max-width: 500px;
+            margin: 1rem auto 0;
         }
 
-        /* 技能标签 – 极简半透明 */
+        /* 技能标签 */
         .skills {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.6rem;
-            margin: 1.5rem 0 1rem;
+            justify-content: center;
+            gap: 0.8rem;
+            margin: 2rem 0;
         }
         .skill-badge {
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(4px);
+            background: rgba(20, 26, 34, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(230, 76, 76, 0.3);
             border-radius: 40px;
-            padding: 0.3rem 1rem;
-            font-size: 0.75rem;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.8rem;
             font-weight: 500;
-            color: #2c5a7a;
-            border: 0.5px solid rgba(80, 120, 160, 0.2);
+            color: #eef2ff;
             transition: all 0.2s;
         }
         .skill-badge:hover {
-            background: white;
-            border-color: #7f9fbf;
-            transform: translateY(-1px);
+            border-color: #e64c4c;
+            background: rgba(230, 76, 76, 0.1);
+            transform: translateY(-2px);
         }
-
-        /* 访客计数 – 融入 */
         .visitor-count {
             font-size: 0.8rem;
-            color: #4a6e8c;
-            background: rgba(255,255,245,0.6);
-            backdrop-filter: blur(4px);
-            display: inline-block;
-            padding: 0.2rem 0.8rem;
-            border-radius: 30px;
-            margin-bottom: 1rem;
+            color: #a0aabf;
+            text-align: center;
+            margin-top: 1rem;
         }
 
-        /* 区块标题 */
-        .zone-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin: 1.8rem 0 1rem;
-            color: #1e3b5c;
+        /* 游戏卡片 */
+        .projects-grid {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            border-left: 3px solid #5f9eff;
-            padding-left: 0.8rem;
-        }
-
-        /* 游戏卡片 – 克制悬停 */
-        .projects {
-            display: flex;
-            gap: 1.2rem;
             flex-wrap: wrap;
-            margin-bottom: 1.5rem;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
         }
         .project-card {
-            background: rgba(255, 255, 255, 0.55);
+            background: rgba(20, 26, 34, 0.8);
             backdrop-filter: blur(8px);
-            flex: 1;
-            min-width: 150px;
-            border-radius: 1.2rem;
-            padding: 1rem;
-            border: 1px solid rgba(80, 120, 160, 0.2);
-            transition: all 0.25s ease;
+            border: 1px solid rgba(230, 76, 76, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            width: 180px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
         .project-card:hover {
-            background: white;
-            transform: translateY(-3px);
-            border-color: #8ab3d0;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+            border-color: #e64c4c;
+            transform: translateY(-6px);
+            box-shadow: 0 15px 30px rgba(230, 76, 76, 0.15);
         }
         .project-icon {
-            font-size: 1.6rem;
-            margin-bottom: 0.4rem;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
         .project-title {
-            font-weight: 700;
-            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
         }
         .project-desc {
             font-size: 0.7rem;
-            color: #5a6e8a;
-            margin: 0.3rem 0 0.8rem;
+            color: #a0aabf;
+            margin: 0.5rem 0;
         }
         .project-link {
             text-decoration: none;
             font-size: 0.75rem;
+            color: #e64c4c;
             font-weight: 500;
-            color: #2c6eb0;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
         }
 
-        /* 工具箱 – 简洁玻璃网格 */
-        .toolbox-section {
-            margin: 2rem 0 1.5rem;
-        }
+        /* 工具箱 */
         .tabs {
             display: flex;
-            gap: 8px;
-            margin: 1rem 0 1.2rem;
-            flex-wrap: wrap;
-            background: rgba(255,255,255,0.4);
-            backdrop-filter: blur(8px);
-            border-radius: 60px;
-            padding: 4px;
-            width: fit-content;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(230, 76, 76, 0.3);
         }
         .tab {
-            background: transparent;
+            background: none;
             border: none;
-            padding: 6px 18px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #2c5a7a;
-            border-radius: 40px;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            color: #a0aabf;
             cursor: pointer;
             transition: 0.2s;
         }
         .tab.active {
-            background: white;
-            color: #1e6bb8;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            color: #e64c4c;
+            border-bottom: 2px solid #e64c4c;
+            margin-bottom: -1px;
         }
         .tool-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 14px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        .tool-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        .tool-grid::-webkit-scrollbar-track {
+            background: #1e2630;
+            border-radius: 4px;
+        }
+        .tool-grid::-webkit-scrollbar-thumb {
+            background: #e64c4c;
+            border-radius: 4px;
         }
         .tool-card {
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(20, 26, 34, 0.8);
             backdrop-filter: blur(8px);
-            border-radius: 1.2rem;
+            border: 1px solid rgba(230, 76, 76, 0.2);
+            border-radius: 12px;
             padding: 1rem;
-            border: 1px solid rgba(80, 120, 160, 0.2);
-            transition: all 0.2s;
+            transition: 0.25s;
         }
         .tool-card:hover {
-            background: white;
+            border-color: #e64c4c;
             transform: translateY(-2px);
-            border-color: #8ab3d0;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.2);
         }
         .tool-card-top {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .tool-icon {
             font-size: 1.4rem;
@@ -267,119 +310,207 @@
         .tool-card h4 {
             font-weight: 600;
             font-size: 0.9rem;
-            color: #1e3b5c;
+            color: #eef2ff;
         }
         .tool-desc {
-            font-size: 0.72rem;
-            color: #5a6e8a;
-            margin: 6px 0 8px;
+            font-size: 0.7rem;
+            color: #a0aabf;
+            margin: 6px 0;
         }
         .tool-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
-            margin-bottom: 10px;
+            margin: 8px 0;
         }
         .tool-tag {
-            background: #eef3fc;
-            padding: 2px 8px;
-            border-radius: 16px;
+            background: rgba(230, 76, 76, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
             font-size: 0.6rem;
-            color: #2c6eb0;
+            color: #e64c4c;
         }
         .tool-link {
-            font-size: 0.75rem;
-            color: #2c6eb0;
+            font-size: 0.7rem;
+            color: #e64c4c;
             text-decoration: none;
-            font-weight: 500;
         }
 
-        hr {
-            margin: 1.8rem 0 1rem;
-            border: none;
-            height: 0.5px;
-            background: linear-gradient(90deg, transparent, #9bb8d0, #5f9eff, #9bb8d0, transparent);
+        /* 评论区 */
+        .comments-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(20, 26, 34, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid rgba(230, 76, 76, 0.3);
         }
+
+        /* 联系区 */
         .contact {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             flex-wrap: wrap;
-            gap: 0.8rem;
-            font-size: 0.75rem;
-            color: #5a6e8a;
+            gap: 2rem;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+            color: #a0aabf;
         }
         .contact a {
-            color: #2c6eb0;
+            color: #e64c4c;
             text-decoration: none;
+            transition: color 0.2s;
+        }
+        .contact a:hover {
+            color: #ff7b7b;
         }
         .footer-quote {
             text-align: center;
             font-size: 0.7rem;
-            color: #7a8eaa;
-            margin-top: 1rem;
+            color: #5a667a;
+            margin-top: 2rem;
         }
-        @media (max-width: 680px) {
-            .card { padding: 1.2rem; }
-            .tool-grid { grid-template-columns: 1fr; }
-            .tabs { width: 100%; justify-content: center; }
-            .intro { justify-content: center; text-align: center; }
+
+        /* 滚动提示 */
+        .scroll-hint {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.4rem;
+            color: #e64c4c;
+            opacity: 0.6;
+            animation: bounce 1.8s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
+            50% { transform: translateX(-50%) translateY(10px); opacity: 1; }
+        }
+
+        /* 进度指示器 */
+        .scroll-progress {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4a5568;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .progress-dot.active {
+            background: #e64c4c;
+            transform: scale(1.4);
+            box-shadow: 0 0 8px #e64c4c;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
+
+        @media (max-width: 768px) {
+            .section { padding: 1rem; justify-content: flex-start; padding-top: 3rem; }
+            .projects-grid { gap: 1rem; }
+            .project-card { width: 160px; padding: 1rem; }
+            .tool-grid { max-height: 45vh; }
+            .contact { gap: 1rem; }
+            .intro-wrap h1 { font-size: 2.5rem; }
+            .scroll-progress { right: 10px; gap: 8px; }
+            .tech-fingerprint { display: none; }
         }
     </style>
 </head>
 <body>
-<div class="grid-bg"></div>
-<div class="container">
-    <div class="card">
-        <div class="intro">
-            <img src="我的头像.jpg" alt="百裏" class="avatar" onerror="this.src='https://placehold.co/100x100?text=avatar'">
-            <div class="title-section">
-                <h1>百裏</h1>
-                <div class="tagline"><i class="fas fa-microchip"></i> 重庆文理学院 · 大一</div>
-                <div class="desc">嵌入式 / 三菱PLC / Git · 记录成长</div>
+<div class="scroll-container" id="scrollContainer">
+    <!-- 屏1：个人介绍 -->
+    <section class="section" data-index="0">
+        <div class="section-content intro-wrap">
+            <img src="我的头像.jpg" alt="百裏" class="avatar" onerror="this.src='https://placehold.co/120x120?text=avatar'">
+            <h1>百裏 <span class="status-badge">State: iterating</span></h1>
+            <div class="en-tagline">CRAFT THE UNSEEN</div>
+            <div class="tagline"><i class="fas fa-microchip"></i> 重庆文理学院 · 大一</div>
+            <div class="desc">嵌入式入门 / 三菱PLC探索 / Git版本控制 · 用代码记录成长。</div>
+            <div class="caption">From 0 to 1, then to ∞ &nbsp;&nbsp;|&nbsp;&nbsp; 从无到一，再到无限</div>
+        </div>
+        <div class="tech-fingerprint">0x3A7F · build 2025-05-27 | kernel: restless</div>
+        <div class="scroll-hint">▼</div>
+    </section>
+
+    <!-- 屏2：技能 -->
+    <section class="section" data-index="1">
+        <div class="section-content" style="text-align: center;">
+            <div class="section-title">EXPERTISE</div>
+            <div class="skills">
+                <span class="skill-badge"><i class="fas fa-microcontroller"></i> ESP32/STM32</span>
+                <span class="skill-badge"><i class="fas fa-industry"></i> 三菱GX2</span>
+                <span class="skill-badge"><i class="fab fa-git-alt"></i> Git基础</span>
+                <span class="skill-badge"><i class="fas fa-chalkboard-user"></i> 家教经验</span>
+                <span class="skill-badge"><i class="fas fa-cube"></i> SolidWorks/UG</span>
+            </div>
+            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="visitor-count">📊 已有 <span id="busuanzi_value_site_pv"></span> 人探索过这里</div>
+            <div class="caption caption-left" style="max-width: 500px; margin: 2rem auto 0;">
+                Embedded in logic, burning with curiosity.<br>
+                嵌入逻辑，炙于好奇
             </div>
         </div>
+        <div class="tech-fingerprint">toolchain: evolving | runtime: 18 years</div>
+    </section>
 
-        <div class="skills">
-            <span class="skill-badge"><i class="fas fa-microcontroller"></i> ESP32/STM32</span>
-            <span class="skill-badge"><i class="fas fa-industry"></i> 三菱GX2</span>
-            <span class="skill-badge"><i class="fab fa-git-alt"></i> Git基础</span>
-            <span class="skill-badge"><i class="fas fa-chalkboard-user"></i> 家教经验</span>
-            <span class="skill-badge"><i class="fas fa-cube"></i> SolidWorks/UG</span>
+    <!-- 屏3：游戏 -->
+    <section class="section" data-index="2">
+        <div class="section-content" style="text-align: center;">
+            <div class="section-title">GAMES & CONNECTION</div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-icon">🐍</div>
+                    <div class="project-title">贪吃蛇</div>
+                    <div class="project-desc">经典方向控制</div>
+                    <a href="snake.html" class="project-link">开始 →</a>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon">🏃‍♂️</div>
+                    <div class="project-title">奔跑的哥哥</div>
+                    <div class="project-desc">点击跳跃跑酷</div>
+                    <a href="dinosaur.html" class="project-link">跑酷 →</a>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon">🧩</div>
+                    <div class="project-title">俄罗斯方块</div>
+                    <div class="project-desc">经典消除</div>
+                    <a href="tetris.html" class="project-link">挑战 →</a>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fab fa-github"></i></div>
+                    <div class="project-title">GitHub</div>
+                    <div class="project-desc">开源学习记录</div>
+                    <a href="https://github.com/bailidashi" class="project-link" target="_blank">访问 →</a>
+                </div>
+            </div>
+            <div class="caption" style="margin-top: 2rem;">
+                Play as praxis – where code meets reflex.<br>
+                游戏即实践——代码与反应的交叉点
+            </div>
         </div>
+        <div class="tech-fingerprint">input latency: 16ms | frame: 60fps</div>
+    </section>
 
-        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-        <div class="visitor-count">📊 已有 <span id="busuanzi_value_site_pv"></span> 人了解过我</div>
-
-        <div class="zone-title"><i class="fas fa-gamepad"></i> 互动 · 游戏</div>
-        <div class="projects">
-            <div class="project-card">
-                <div class="project-icon">🐍</div>
-                <div class="project-title">贪吃蛇</div>
-                <div class="project-desc">经典方向控制</div>
-                <a href="snake.html" class="project-link">开始 →</a>
-            </div>
-            <div class="project-card">
-                <div class="project-icon">🏃‍♂️</div>
-                <div class="project-title">奔跑的哥哥</div>
-                <div class="project-desc">点击跳跃跑酷</div>
-                <a href="dinosaur.html" class="project-link">跑酷 →</a>
-            </div>
-            <div class="project-card">
-                <div class="project-icon">🧩</div>
-                <div class="project-title">俄罗斯方块</div>
-                <div class="project-desc">经典消除</div>
-                <a href="tetris.html" class="project-link">挑战 →</a>
-            </div>
-            <div class="project-card">
-                <div class="project-icon"><i class="fab fa-github"></i></div>
-                <div class="project-title">GitHub</div>
-                <div class="project-desc">开源学习记录</div>
-                <a href="https://github.com/bailidashi" class="project-link" target="_blank">访问 →</a>
-            </div>
-        </div>
-
-        <div class="toolbox-section">
-            <div class="zone-title"><i class="fas fa-toolbox"></i> 工具箱 · 资源库</div>
+    <!-- 屏4：工具箱 -->
+    <section class="section" data-index="3">
+        <div class="section-content" style="width: 100%;">
+            <div class="section-title" style="text-align: center;">TECH ECOSYSTEM</div>
+            <div class="caption" style="text-align: center; margin-bottom: 1rem;">Arsenal of the mind. &nbsp;|&nbsp; 心智的兵工厂</div>
             <div class="tabs" id="toolTabs">
                 <div class="tab active" data-cat="dev">开发</div>
                 <div class="tab" data-cat="design">设计</div>
@@ -389,28 +520,51 @@
             </div>
             <div id="toolboxGrid" class="tool-grid"></div>
         </div>
+        <div class="tech-fingerprint">lib count: 26 | last sync: now</div>
+    </section>
 
-        <div class="comments-container" style="margin-top: 2rem;">
-            <script src="https://utteranc.es/client.js"
-                    repo="bailidashi/bailidashi.github.io"
-                    issue-term="pathname"
-                    label="blog"
-                    theme="github-light"
-                    crossorigin="anonymous"
-                    async>
-            </script>
+    <!-- 屏5：评论区 -->
+    <section class="section" data-index="4">
+        <div class="section-content" style="text-align: center;">
+            <div class="section-title">CONNECT</div>
+            <div class="caption" style="margin-bottom: 1rem;"># Chapter 5 — The Logbook &nbsp;|&nbsp; 第五章 · 航行日志</div>
+            <div class="comments-container">
+                <script src="https://utteranc.es/client.js"
+                        repo="bailidashi/bailidashi.github.io"
+                        issue-term="pathname"
+                        label="blog"
+                        theme="github-dark"
+                        crossorigin="anonymous"
+                        async>
+                </script>
+            </div>
         </div>
+        <div class="tech-fingerprint">issue #comment | github api</div>
+    </section>
 
-        <hr>
-        <div class="contact">
-            <span><i class="far fa-envelope"></i> 3500815367@qq.com</span>
-            <span><i class="fab fa-qq"></i> QQ: 3500815367</span>
-            <span><i class="fab fa-bilibili"></i> <a href="https://space.bilibili.com/514882301" target="_blank">B站主页</a></span>
-            <span><i class="fas fa-map-marker-alt"></i> 天才盖亚是个人物</span>
+    <!-- 屏6：联系 -->
+    <section class="section" data-index="5">
+        <div class="section-content" style="text-align: center;">
+            <div class="contact">
+                <span><i class="far fa-envelope"></i> 3154997545@qq.com</span>
+                <span><i class="fab fa-qq"></i> QQ: 3154997545</span>
+                <span><i class="fab fa-bilibili"></i> <a href="https://space.bilibili.com/514882301" target="_blank">B站主页</a></span>
+                <span><i class="fas fa-map-marker-alt"></i> KEEP ITERATING</span>
+            </div>
+            <div class="footer-quote">
+                <span style="font-family: monospace;">&lt; / &gt; with ❤️ and insomnia</span><br>
+                © 2025 bailidashi · 学无止境 · No final version.
+            </div>
+            <div class="caption" style="margin-top: 1.5rem;">
+                ∞ iterations &nbsp;|&nbsp; 持续迭代，没有最终版
+            </div>
         </div>
-        <div class="footer-quote">“学无止境 ·”</div>
-    </div>
+        <div class="tech-fingerprint">last commit: 2025-05-27 | branch: main</div>
+    </section>
 </div>
+
+<!-- 进度指示器 -->
+<div class="scroll-progress" id="progressDots"></div>
 
 <script>
     const toolboxData = {
@@ -479,6 +633,58 @@
             tab.classList.add('active');
             renderToolbox(tab.getAttribute('data-cat'));
         });
+    });
+
+    // Intersection Observer 滚动动画
+    const sections = document.querySelectorAll('.section');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                const index = parseInt(entry.target.dataset.index);
+                updateProgress(index);
+            }
+        });
+    }, { threshold: 0.4 });
+    sections.forEach(section => observer.observe(section));
+
+    // 进度指示器生成
+    const progressContainer = document.getElementById('progressDots');
+    for (let i = 0; i < sections.length; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('progress-dot');
+        dot.dataset.index = i;
+        dot.addEventListener('click', () => {
+            sections[i].scrollIntoView({ behavior: 'smooth' });
+        });
+        progressContainer.appendChild(dot);
+    }
+    function updateProgress(activeIndex) {
+        const dots = document.querySelectorAll('.progress-dot');
+        dots.forEach((dot, idx) => {
+            if (idx === activeIndex) dot.classList.add('active');
+            else dot.classList.remove('active');
+        });
+    }
+    updateProgress(0);
+
+    // 页面内链接淡出转场
+    document.querySelectorAll('a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('http') && !href.startsWith('#') && href !== '' && !href.includes('javascript')) {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.body.style.opacity = '0';
+                document.body.style.transform = 'translateY(15px)';
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 280);
+            });
+        }
+    });
+    window.addEventListener('pageshow', () => {
+        document.body.style.opacity = '1';
+        document.body.style.transform = 'translateY(0)';
     });
 </script>
 </body>
