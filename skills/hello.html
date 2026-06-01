@@ -35,8 +35,28 @@ h1{font-size:2rem;font-weight:800;letter-spacing:-.5px;margin-bottom:.3rem}
   <span><strong>触发命令</strong> <span class="trigger">/hello</span></span>
   <span><strong>类型</strong> 测试验证</span>
   <span><strong>状态</strong> ✅ 已验证</span>
-  <span><a href="hello.md" download style="display:inline-block;background:#58a880;color:#fff;padding:.35rem .9rem;border-radius:6px;font-size:.82rem;text-decoration:none;font-weight:500">📥 下载 SKILL.md</a></span>
+  <span><a href="hello.md" target="_blank" style="display:inline-block;background:#58a880;color:#fff;padding:.35rem .9rem;border-radius:6px;font-size:.82rem;text-decoration:none;font-weight:500">📥 查看/下载</a></span>
+  <span><button onclick="copySkill()" style="background:#fff;border:1px solid #78c8a0;color:#58a880;padding:.35rem .9rem;border-radius:6px;font-size:.82rem;cursor:pointer;font-weight:500">📋 一键复制</button></span>
 </div>
+<script>
+async function copySkill(){
+  try{
+    const r=await fetch('hello.md');
+    const text=await r.text();
+    await navigator.clipboard.writeText(text);
+    alert('SKILL.md 内容已复制到剪贴板！');
+  }catch(e){
+    const ta=document.createElement('textarea');
+    const r=await fetch('hello.md');
+    ta.value=await r.text();
+    ta.style.cssText='position:fixed;top:10%;left:5%;width:90%;height:70%;z-index:9999;font-family:monospace;font-size:14px;padding:1rem;border:2px solid #58a880;border-radius:8px';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.focus();
+    alert('已选中全部内容，请 Ctrl+C 复制（或长按选择复制）');
+  }
+}
+</script>
 
 <div class="section-card">
   <h2>行为</h2>

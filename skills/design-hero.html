@@ -39,9 +39,29 @@ h1{font-size:2rem;font-weight:800;letter-spacing:-.5px;margin-bottom:.3rem}
 <div class="meta">
   <span><strong>触发命令</strong> <span class="trigger">/design-hero</span></span>
   <span><strong>类型</strong> 视觉设计</span>
-  <span><strong>预览优先</strong> 不直接改原文件</span>
-  <span><a href="design-hero.md" download style="display:inline-block;background:#58a880;color:#fff;padding:.35rem .9rem;border-radius:6px;font-size:.82rem;text-decoration:none;font-weight:500">📥 下载 SKILL.md</a></span>
+  <span><a href="design-hero.md" target="_blank" style="display:inline-block;background:#58a880;color:#fff;padding:.35rem .9rem;border-radius:6px;font-size:.82rem;text-decoration:none;font-weight:500">📥 查看/下载</a></span>
+  <span><button onclick="copySkill()" style="background:#fff;border:1px solid #78c8a0;color:#58a880;padding:.35rem .9rem;border-radius:6px;font-size:.82rem;cursor:pointer;font-weight:500">📋 一键复制</button></span>
 </div>
+<script>
+async function copySkill(){
+  try{
+    const r=await fetch('design-hero.md');
+    const text=await r.text();
+    await navigator.clipboard.writeText(text);
+    alert('SKILL.md 内容已复制到剪贴板！');
+  }catch(e){
+    // 降级：弹出一个预选好的文本框，手动 Ctrl+C
+    const ta=document.createElement('textarea');
+    const r=await fetch('design-hero.md');
+    ta.value=await r.text();
+    ta.style.cssText='position:fixed;top:10%;left:5%;width:90%;height:70%;z-index:9999;font-family:monospace;font-size:14px;padding:1rem;border:2px solid #58a880;border-radius:8px';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.focus();
+    alert('已选中全部内容，请 Ctrl+C 复制（或长按选择复制）');
+  }
+}
+</script>
 
 <div class="section-card">
   <h2>大改版模式</h2>
