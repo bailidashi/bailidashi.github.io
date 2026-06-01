@@ -103,6 +103,64 @@ nav a.active,nav a:hover{color:var(--mint-deep);}
 .section.in-view .section__inner{opacity:1;transform:translateY(0);}
 
 /* ============================================================
+   ✨ 波浪过渡光斑
+   ============================================================ */
+.glow-blob{
+  position:absolute;z-index:3;
+  border-radius:50%;pointer-events:none;
+  filter:blur(30px);
+  animation:glow-drift 9s ease-in-out infinite;
+}
+.glow-blob--a{
+  width:180px;height:100px;
+  background:radial-gradient(ellipse,rgba(120,200,160,.5) 0%,transparent 100%);
+  left:18%;bottom:-22px;
+}
+.glow-blob--b{
+  width:220px;height:90px;
+  background:radial-gradient(ellipse,rgba(88,168,128,.35) 0%,transparent 100%);
+  right:14%;bottom:-8px;
+  animation-delay:-5s;
+}
+.glow-blob--c{
+  width:120px;height:130px;
+  background:radial-gradient(ellipse,rgba(168,216,192,.4) 0%,transparent 100%);
+  left:52%;bottom:-28px;
+  animation-delay:-7s;
+}
+.glow-blob--dark{
+  width:200px;height:110px;
+  background:radial-gradient(ellipse,rgba(120,200,160,.35) 0%,transparent 100%);
+  left:30%;bottom:-18px;
+  filter:blur(36px);
+  animation:glow-drift-dark 11s ease-in-out infinite;
+}
+.glow-blob--dark2{
+  width:150px;height:130px;
+  background:radial-gradient(ellipse,rgba(88,168,128,.3) 0%,transparent 100%);
+  right:22%;bottom:-24px;
+  filter:blur(34px);
+  animation:glow-drift-dark 13s ease-in-out infinite reverse;
+}
+@keyframes glow-drift{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-16px) scale(1.1)}
+}
+@keyframes glow-drift-dark{
+  0%,100%{transform:translateY(0) scale(1);opacity:.35}
+  50%{transform:translateY(-20px) scale(1.15);opacity:.55}
+}
+.glow-reflect{
+  position:absolute;z-index:1;bottom:0;left:0;right:0;
+  height:70px;
+  background:linear-gradient(to top,rgba(120,200,160,.09) 0%,rgba(120,200,160,.02) 50%,transparent 100%);
+  pointer-events:none;
+}
+.glow-reflect--strong{
+  background:linear-gradient(to top,rgba(88,168,128,.14) 0%,rgba(88,168,128,.04) 50%,transparent 100%);
+}
+
+/* ============================================================
    Hero — 薄荷斜切 + 奶杏内容
    ============================================================ */
 #section0{padding:0;}
@@ -302,7 +360,7 @@ nav a.active,nav a:hover{color:var(--mint-deep);}
 .skill-card:hover{
   background:rgba(120,200,160,.10);
   border-color:var(--mint-accent);
-  transform:translateY(-3px);
+  transform:perspective(500px) rotateY(-2deg) rotateX(2deg) translateY(-3px);
   box-shadow:0 8px 24px rgba(0,0,0,.3);
 }
 .skill-card__icon{font-size:1.8rem;margin-bottom:.5rem;display:block;}
@@ -332,9 +390,9 @@ nav a.active,nav a:hover{color:var(--mint-deep);}
   pointer-events:none;
 }
 .game-card:hover{
-  transform:translateY(-6px);
+  transform:perspective(600px) rotateY(-3deg) rotateX(3deg) translateY(-6px);
   border-color:var(--mint-accent);
-  box-shadow:0 16px 36px rgba(24,40,32,.08);
+  box-shadow:12px 18px 32px rgba(24,40,32,.1);
 }
 .game-card__icon{font-size:2.5rem;margin-bottom:.7rem;display:block;}
 .game-card__title{font-size:.95rem;font-weight:700;color:var(--text-dark);margin-bottom:.3rem;}
@@ -480,6 +538,7 @@ nav a.active,nav a:hover{color:var(--mint-deep);}
 
   .tech-fingerprint{display:none;}
   .scroll-progress{right:10px;height:40vh;}
+  .glow-blob,.glow-reflect{display:none;}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}}
 </style>
@@ -594,6 +653,12 @@ nav a.active,nav a:hover{color:var(--mint-deep);}
       <p class="caption">Embedded in logic, burning with curiosity.<br>嵌入逻辑，炙于好奇</p>
     </div>
 
+    <!-- ✨ 光斑 S1→S2 -->
+    <div class="glow-reflect"></div>
+    <div class="glow-blob glow-blob--a" style="left:12%;bottom:-18px"></div>
+    <div class="glow-blob glow-blob--b" style="right:18%;bottom:-12px"></div>
+    <div class="glow-blob glow-blob--c" style="left:55%"></div>
+
     <div class="section-wave"><svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M0 40 Q180 10 360 35 T720 30 T1080 38 T1440 25 L1440 80 L0 80 Z" fill="#fdf8f4" opacity=".6"/>
       <path d="M0 50 Q200 25 400 45 T800 40 T1200 48 T1440 38 L1440 80 L0 80 Z" fill="#fdf8f4" opacity=".35"/>
@@ -638,6 +703,11 @@ nav a.active,nav a:hover{color:var(--mint-deep);}
       <p class="caption">Play as praxis – where code meets reflex.<br>游戏即实践——代码与反应的交叉点</p>
     </div>
 
+    <!-- ✨ 光斑 S2→S3 -->
+    <div class="glow-reflect glow-reflect--strong"></div>
+    <div class="glow-blob glow-blob--a" style="left:25%;bottom:-20px"></div>
+    <div class="glow-blob glow-blob--b" style="right:25%;bottom:-6px"></div>
+
     <div class="section-wave"><svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M0 35 Q160 55 340 40 T700 38 T1060 42 T1440 32 L1440 80 L0 80 Z" fill="#e8f4ed" opacity=".7"/>
       <path d="M0 45 Q180 60 380 48 T760 45 T1140 50 T1440 42 L1440 80 L0 80 Z" fill="#e8f4ed" opacity=".4"/>
@@ -663,6 +733,11 @@ nav a.active,nav a:hover{color:var(--mint-deep);}
 
       <div id="toolboxGrid" class="tool-grid" role="tabpanel"></div>
     </div>
+
+    <!-- ✨ 光斑 S3→S4 -->
+    <div class="glow-reflect"></div>
+    <div class="glow-blob glow-blob--a" style="left:20%;bottom:-24px"></div>
+    <div class="glow-blob glow-blob--c" style="left:48%"></div>
 
     <div class="section-wave"><svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M0 38 Q200 18 400 35 T800 32 T1200 36 T1440 28 L1440 80 L0 80 Z" fill="#faf5ee" opacity=".6"/>
@@ -690,6 +765,12 @@ nav a.active,nav a:hover{color:var(--mint-deep);}
         </script>
       </div>
     </div>
+
+    <!-- ✨ 光斑 S4→S5 亮→暗过渡 -->
+    <div class="glow-reflect glow-reflect--strong"></div>
+    <div class="glow-blob glow-blob--dark" style="left:20%;bottom:-16px"></div>
+    <div class="glow-blob glow-blob--dark2" style="right:18%;bottom:-22px"></div>
+    <div class="glow-blob glow-blob--c" style="left:48%;bottom:-30px"></div>
 
     <div class="section-wave"><svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M0 36 Q180 56 360 42 T720 40 T1080 44 T1440 34 L1440 80 L0 80 Z" fill="#0d1a14" opacity=".75"/>
