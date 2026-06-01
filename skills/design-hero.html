@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>design-hero · AI Skill</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--mint:#78c8a0;--cream:#faf5ee;--text:#1e2a24;--muted:#98a89e;--code-bg:#f4f0eb}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+.container{max-width:780px;margin:0 auto;padding:3rem 1.5rem}
+.back{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);font-size:.85rem;margin-bottom:2rem;transition:color .2s}
+.back:hover{color:var(--text)}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.7rem;background:rgba(120,200,160,.15);color:#58a880;padding:.2rem .6rem;border-radius:6px;margin-bottom:.8rem}
+h1{font-size:2rem;font-weight:800;letter-spacing:-.5px;margin-bottom:.3rem}
+.desc{font-size:.9rem;color:var(--muted);margin-bottom:2rem}
+.meta{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:2.5rem;font-size:.82rem;color:var(--muted)}
+.meta span strong{color:var(--text);font-weight:600}
+.section-card{background:#fff;border:1px solid rgba(120,200,160,.12);border-radius:12px;padding:1.8rem 2rem;margin-bottom:1.5rem}
+.section-card h2{font-size:1.1rem;font-weight:600;color:#58a880;margin-bottom:1rem;letter-spacing:.5px}
+.section-card p,.section-card li{font-size:.88rem;line-height:1.75;color:var(--text)}
+.section-card ul{padding-left:1.2rem}
+.section-card li{margin-bottom:.3rem}
+.section-card code,.section-card pre{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px}
+.section-card table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.8rem 0}
+.section-card th{background:rgba(120,200,160,.08);padding:.5rem .8rem;text-align:left;font-weight:600;color:#58a880}
+.section-card td{padding:.5rem .8rem;border-bottom:1px solid rgba(120,200,160,.08)}
+.trigger{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--mint);background:rgba(120,200,160,.08);padding:.15rem .5rem;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="../index.html" class="back">← 回到主页</a>
+<br><span class="badge">Claude Code Skill</span>
+<h1>design-hero</h1>
+<p class="desc">网站视觉设计与优化 —— 大改版换肤 + 小打磨加动效，双模式切换</p>
+
+<div class="meta">
+  <span><strong>触发命令</strong> <span class="trigger">/design-hero</span></span>
+  <span><strong>类型</strong> 视觉设计</span>
+  <span><strong>预览优先</strong> 不直接改原文件</span>
+  <span><a href="design-hero.md" download style="display:inline-block;background:#58a880;color:#fff;padding:.35rem .9rem;border-radius:6px;font-size:.82rem;text-decoration:none;font-weight:500">📥 下载 SKILL.md</a></span>
+</div>
+
+<div class="section-card">
+  <h2>大改版模式</h2>
+  <ul>
+    <li>读取 index.html → 询问配色偏好</li>
+    <li>8 套配色方案可选（薄荷奶杏、樱花天蓝、蜜桃奶油等）</li>
+    <li>生成独立预览文件，用户确认后再合入</li>
+    <li>支持 Hero 斜切分屏、波浪过渡、6 section 全页重构</li>
+  </ul>
+</div>
+
+<div class="section-card">
+  <h2>小打磨模式</h2>
+  <table>
+    <tr><th>选项</th><th>效果</th><th>改动量</th></tr>
+    <tr><td>过渡光斑</td><td>section 间雾状光晕柔和过渡</td><td>CSS + div</td></tr>
+    <tr><td>3D 卡片倾斜</td><td>hover 时微旋转 + 景深阴影</td><td>2 行 CSS</td></tr>
+    <tr><td>头像光环旋转</td><td>头像外围渐变色圆环缓慢旋转</td><td>伪元素 + 动画</td></tr>
+    <tr><td>鼠标跟随光晕</td><td>页面跟随鼠标移动的柔光</td><td>CSS + 10行JS</td></tr>
+    <tr><td>文字渐入动效</td><td>内容滚动到屏幕时渐显</td><td>CSS + JS</td></tr>
+  </table>
+</div>
+
+<div class="section-card">
+  <h2>8 套可选配色</h2>
+  <table>
+    <tr><th>配色</th><th>主色</th><th>风格</th></tr>
+    <tr><td>薄荷+奶杏</td><td>#c8e8d8 / #78c8a0</td><td>清新自然</td></tr>
+    <tr><td>樱花+天蓝</td><td>#f0d5da / #d4909f</td><td>温柔少女</td></tr>
+    <tr><td>蜜桃+奶油</td><td>#f5d5c8 / #d49070</td><td>温暖日系</td></tr>
+    <tr><td>薰衣草+奶白</td><td>#e0d4f0 / #a890c8</td><td>文静淡雅</td></tr>
+    <tr><td>柠檬+奶绿</td><td>#f5f0c8 / #d0c878</td><td>活泼明快</td></tr>
+    <tr><td>海盐+天蓝</td><td>#d0e8f0 / #78bcc8</td><td>清爽冷静</td></tr>
+    <tr><td>抹茶+米白</td><td>#d4e0c8 / #90b070</td><td>自然素雅</td></tr>
+    <tr><td>焦糖+奶盖</td><td>#e8d8c8 / #c0a070</td><td>复古咖啡</td></tr>
+  </table>
+</div>
+
+<div class="section-card">
+  <h2>核心原则</h2>
+  <ul>
+    <li>无论如何都不要在没有预览的情况下直接改原文件</li>
+    <li>一次只改一个方向，让差异清晰可见</li>
+    <li>保持现有配色和字体风格</li>
+    <li>移动端自动降级（动效隐藏或简化）</li>
+    <li>纯 CSS 实现，不引入图片或三方库</li>
+  </ul>
+</div>
+</div>
+</body>
+</html>

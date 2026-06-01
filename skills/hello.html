@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>hello · AI Skill</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--mint:#78c8a0;--cream:#faf5ee;--text:#1e2a24;--muted:#98a89e}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+.container{max-width:780px;margin:0 auto;padding:3rem 1.5rem}
+.back{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);font-size:.85rem;margin-bottom:2rem;transition:color .2s}
+.back:hover{color:var(--text)}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.7rem;background:rgba(120,200,160,.15);color:#58a880;padding:.2rem .6rem;border-radius:6px;margin-bottom:.8rem}
+h1{font-size:2rem;font-weight:800;letter-spacing:-.5px;margin-bottom:.3rem}
+.desc{font-size:.9rem;color:var(--muted);margin-bottom:2rem}
+.meta{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:2.5rem;font-size:.82rem;color:var(--muted)}
+.meta span strong{color:var(--text);font-weight:600}
+.section-card{background:#fff;border:1px solid rgba(120,200,160,.12);border-radius:12px;padding:1.8rem 2rem;margin-bottom:1.5rem}
+.section-card h2{font-size:1.1rem;font-weight:600;color:#58a880;margin-bottom:1rem}
+.section-card li{font-size:.88rem;line-height:1.75;margin-bottom:.3rem}
+.section-card em{color:var(--muted)}
+.trigger{font-family:'JetBrains Mono',monospace;font-size:.82rem;background:rgba(120,200,160,.08);padding:.15rem .5rem;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="../index.html" class="back">← 回到主页</a>
+<br><span class="badge">Claude Code Skill</span>
+<h1>hello</h1>
+<p class="desc">我的第一个 Skill —— 验证整个安装流程可用</p>
+
+<div class="meta">
+  <span><strong>触发命令</strong> <span class="trigger">/hello</span></span>
+  <span><strong>类型</strong> 测试验证</span>
+  <span><strong>状态</strong> ✅ 已验证</span>
+  <span><a href="hello.md" download style="display:inline-block;background:#58a880;color:#fff;padding:.35rem .9rem;border-radius:6px;font-size:.82rem;text-decoration:none;font-weight:500">📥 下载 SKILL.md</a></span>
+</div>
+
+<div class="section-card">
+  <h2>行为</h2>
+  <ul>
+    <li>用中文热情友好地向用户问好（带 Emoji）</li>
+    <li>告知今天的日期</li>
+    <li>简要告知当前工作目录</li>
+    <li>主动询问用户今天需要什么帮助</li>
+  </ul>
+</div>
+
+<div class="section-card">
+  <h2>要点</h2>
+  <ul>
+    <li>保持语气轻松自然</li>
+    <li>不要过长，控制在 3-5 句话</li>
+    <li>结束时主动询问用户需求</li>
+  </ul>
+</div>
+
+<div class="section-card">
+  <h2>Skill 文件结构</h2>
+  <pre style="font-family:'JetBrains Mono',monospace;font-size:.78rem;background:#f4f0eb;padding:1rem;border-radius:8px;line-height:1.8">练习文件夹\
+  └── .claude\
+       └── skills\
+            └── hello\
+                 └── SKILL.md</pre>
+  <p style="font-size:.82rem;color:var(--muted);margin-top:.8rem">这就是一个 Skill 的全部——一个 Markdown 文件。没有代码，全是给 AI 看的指令。</p>
+</div>
+
+<div class="section-card" style="background:rgba(120,200,160,.05)">
+  <p style="font-size:.88rem;color:var(--muted)">📌 <strong>纪念意义：</strong>这是我在 <span class="trigger">2025年</span> 做的第一个 Skill，从创建文件夹到测试成功只花了 5 分钟。它让我明白：Skill 的本质就是一个提示词模板。</p>
+</div>
+</div>
+</body>
+</html>

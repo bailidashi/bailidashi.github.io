@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>波浪过渡对比 - 原版 vs 加光斑</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',-apple-system,sans-serif;
+  background:#0d1a14;
+  color:#e0e6e2;
+  overflow-x:hidden;
+}
+
+/* 顶栏 */
+.bar{
+  text-align:center;padding:2rem 1rem 1rem;
+}
+.bar h1{font-size:1.4rem;font-weight:600;color:#c8e8d8;margin-bottom:.3rem}
+.bar p{font-size:.8rem;color:#98a89e}
+
+/* 双栏对比 */
+.compare{
+  display:flex;gap:2rem;max-width:1200px;margin:2rem auto;padding:0 2rem;
+}
+.col{
+  flex:1;border-radius:16px;overflow:hidden;
+  border:1px solid rgba(120,200,160,.15);
+}
+.col-label{
+  text-align:center;padding:.8rem;font-size:.8rem;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;
+}
+.col-label.old{background:rgba(120,200,160,.08);color:#98a89e}
+.col-label.new{background:rgba(120,200,160,.18);color:#78c8a0}
+
+/* section 模拟 */
+.s-section{
+  height:300px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  font-size:1.2rem;font-weight:600;
+}
+.s-light{background:#faf5ee;color:#1e2a24}    /* cream */
+.s-mint{background:#e8f4ed;color:#1e2a24}      /* light mint */
+.s-dark{background:#0d1a14;color:#e0e6e2}       /* dark mint */
+
+/* ===== 原版波浪 ===== */
+.wave-basic{
+  position:absolute;left:0;right:0;bottom:-2px;pointer-events:none;z-index:2;
+}
+.wave-basic svg{display:block;width:100%;height:auto;}
+
+/* ===== 新：波浪 + 光斑 ===== */
+.wave-enhanced{
+  position:absolute;left:0;right:0;bottom:-2px;pointer-events:none;z-index:2;
+}
+.wave-enhanced svg{display:block;width:100%;height:auto;position:relative;z-index:2;}
+
+/* 光斑：在波浪上方，颜色渗入下一个 section */
+.glow-blob{
+  position:absolute;z-index:3;
+  border-radius:50%;filter:blur(28px);
+  pointer-events:none;opacity:.5;
+  animation:drift 8s ease-in-out infinite;
+}
+.glow-blob--1{
+  width:160px;height:100px;
+  background:radial-gradient(ellipse,rgba(120,200,160,.55),transparent);
+  left:20%;bottom:-20px;
+}
+.glow-blob--2{
+  width:200px;height:80px;
+  background:radial-gradient(ellipse,rgba(88,168,128,.4),transparent);
+  right:15%;bottom:-10px;
+  animation-delay:-4s;
+}
+.glow-blob--3{
+  width:100px;height:120px;
+  background:radial-gradient(ellipse,rgba(168,216,192,.45),transparent);
+  left:55%;bottom:-25px;
+  animation-delay:-6s;
+}
+@keyframes drift{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-14px) scale(1.12)}
+}
+
+/* 当前 section 底部的柔和反光（光斑的倒影感） */
+.glow-reflect{
+  position:absolute;z-index:1;bottom:0;left:0;right:0;
+  height:60px;
+  background:linear-gradient(to top,rgba(120,200,160,.08),transparent);
+  pointer-events:none;
+}
+
+/* ===== 暗色到暗色过渡的特殊光斑 ===== */
+.glow-blob--dark{
+  width:180px;height:90px;
+  background:radial-gradient(ellipse,rgba(120,200,160,.3),transparent);
+  left:35%;bottom:-15px;
+  filter:blur(32px);opacity:.35;
+  animation:drift-dark 10s ease-in-out infinite;
+}
+@keyframes drift-dark{
+  0%,100%{transform:translateY(0) scale(1);opacity:.3}
+  50%{transform:translateY(-18px) scale(1.15);opacity:.5}
+}
+
+/* 标注 */
+.note{
+  max-width:1200px;margin:1.5rem auto 3rem;padding:0 2rem;
+  font-size:.78rem;color:#98a89e;line-height:1.8;
+}
+.note strong{color:#78c8a0}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <h1>Section 波浪过渡对比</h1>
+  <p>左侧 = 当前版本 · 右侧 = 加了光斑 + 柔光反射</p>
+</div>
+
+<!-- ========== 对比1：亮色→亮色 ========== -->
+<div class="compare">
+  <div class="col">
+    <div class="col-label old">原版 →</div>
+    <div class="s-section s-light">
+      Section A（奶杏底）
+      <div class="wave-basic">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+          <path d="M0 35 Q160 55 340 40 T700 38 T1060 42 T1440 32 L1440 80 L0 80 Z" fill="#e8f4ed" opacity=".7"/>
+          <path d="M0 45 Q180 60 380 48 T760 45 T1140 50 T1440 42 L1440 80 L0 80 Z" fill="#e8f4ed" opacity=".4"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="col-label new">增强版 →</div>
+    <div class="s-section s-light" style="position:relative">
+      Section A（奶杏底）
+      <div class="glow-reflect"></div>
+      <div class="glow-blob glow-blob--1"></div>
+      <div class="glow-blob glow-blob--2"></div>
+      <div class="wave-enhanced">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+          <path d="M0 35 Q160 55 340 40 T700 38 T1060 42 T1440 32 L1440 80 L0 80 Z" fill="#e8f4ed" opacity=".7"/>
+          <path d="M0 45 Q180 60 380 48 T760 45 T1140 50 T1440 42 L1440 80 L0 80 Z" fill="#e8f4ed" opacity=".4"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 对比2：亮色→暗色 ========== -->
+<div class="compare">
+  <div class="col">
+    <div class="col-label old">原版 →</div>
+    <div class="s-section s-mint">
+      最后亮色 Section → 深色 Contact
+      <div class="wave-basic">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+          <path d="M0 36 Q180 56 360 42 T720 40 T1080 44 T1440 34 L1440 80 L0 80 Z" fill="#0d1a14" opacity=".75"/>
+          <path d="M0 46 Q200 60 400 50 T800 48 T1200 52 T1440 44 L1440 80 L0 80 Z" fill="#0d1a14" opacity=".45"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="col-label new">增强版 →</div>
+    <div class="s-section s-mint" style="position:relative">
+      最后亮色 Section → 深色 Contact
+      <div class="glow-reflect" style="background:linear-gradient(to top,rgba(88,168,128,.12),transparent)"></div>
+      <div class="glow-blob glow-blob--dark"</div>
+      <div class="glow-blob glow-blob--3" style="right:25%;left:unset;bottom:-18px"></div>
+      <div class="wave-enhanced">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+          <path d="M0 36 Q180 56 360 42 T720 40 T1080 44 T1440 34 L1440 80 L0 80 Z" fill="#0d1a14" opacity=".75"/>
+          <path d="M0 46 Q200 60 400 50 T800 48 T1200 52 T1440 44 L1440 80 L0 80 Z" fill="#0d1a14" opacity=".45"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>改动说明：</strong>每个 section 底部加两种元素——<br>
+  ① <strong>glow-blob</strong>：2-3 个椭圆光斑，模糊半径 28-32px，淡薄荷色，带缓慢浮动动画<br>
+  ② <strong>glow-reflect</strong>：section 底部 60px 高的渐变反光，从透明渐变到淡薄荷色<br><br>
+  效果：section 之间的过渡不再生硬，有一层朦胧的雾状光感从上一个 section 渗透到下一个。<br>
+  深色 Contact 区域的过渡效果最明显——光斑在暗底上更亮。<br><br>
+  <strong>实现：</strong>纯 CSS，不用改 HTML 结构，每个 section 底部加 3 个 div 即可。
+</div>
+
+</body>
+</html>
