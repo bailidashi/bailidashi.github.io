@@ -320,6 +320,20 @@ h2 {
   display: flex;
   justify-content: center;
 }
+.avatar-glow{
+  position:relative;width:180px;height:180px;
+}
+.avatar-glow::after{
+  content:'';position:absolute;inset:-6px;
+  border-radius:50%;
+  border:2px solid var(--blue-bright);
+  animation:avatar-pulse 2.5s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes avatar-pulse{
+  0%,100%{transform:scale(1);opacity:.3}
+  50%{transform:scale(1.06);opacity:.7;box-shadow:0 0 20px rgba(59,130,246,.4)}
+}
 .battery-3d {
   width: 240px;
   filter: drop-shadow(0 20px 25px -8px rgba(0,0,0,0.15));
@@ -579,7 +593,9 @@ h2 {
           </div>
         </div>
         <div class="hero-right">
-          <img src="我的头像.jpg" alt="百裏 头像" style="width:180px;height:180px;border-radius:50%;object-fit:cover;border:3px solid var(--blue-bright);box-shadow:0 0 30px rgba(59,130,246,.3)" loading="lazy" onerror="this.src='https://placehold.co/180x180?text=avatar'">
+          <div class="avatar-glow">
+            <img src="我的头像.jpg" alt="百裏 头像" style="width:180px;height:180px;border-radius:50%;object-fit:cover;display:block" loading="lazy" onerror="this.src='https://placehold.co/180x180?text=avatar'">
+          </div>
         </div>
       </div>
     </div>
