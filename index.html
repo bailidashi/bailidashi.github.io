@@ -780,9 +780,9 @@ body::after {
       </div>
     `,
     comments: `
-      <div class="page-card" style="height:85vh;display:flex;flex-direction:column;">
+      <div class="page-card">
         <div class="page-title">📌 航行日志 · 留言区</div>
-        <div class="comments-wrap-depth" style="flex:1;overflow-y:auto;">
+        <div class="comments-wrap-depth">
           <div id="cusdis_thread"
                data-host="https://cusdis.com"
                data-app-id="f86b717c-f4a3-4b29-be61-42c62e2a254e"
@@ -895,13 +895,20 @@ body::after {
     // 初始定位第一页
     scrollToPage(0, false);
     
-    // 左侧导航点击事件
+    let cusdisLoaded = false;
     navItems.forEach(item => {
       item.addEventListener('click', (e) => {
         const targetPage = item.getAttribute('data-page');
         const targetIndex = pageOrder.indexOf(targetPage);
         if (targetIndex !== -1) {
           scrollToPage(targetIndex, true);
+          if (targetPage === 'comments' && !cusdisLoaded) {
+            cusdisLoaded = true;
+            const s = document.createElement('script');
+            s.src = 'https://cusdis.com/js/cusdis.es.js';
+            s.async = true; s.defer = true;
+            document.body.appendChild(s);
+          }
         }
       });
     });
@@ -975,6 +982,5 @@ body::after {
   init();
 </script>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
 </body>
 </html>
