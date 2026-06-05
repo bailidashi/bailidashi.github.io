@@ -51,9 +51,40 @@ body{
 .footer-bar{text-align:center;font-size:.75rem;color:#aaa;border-top:1px solid #e0e0e0;padding-top:.8rem;margin-top:1.5rem}
 @media print{body{background:#fff;padding:0}.resume{box-shadow:none;width:100%;min-height:auto;padding:15mm 18mm}}
 @media(max-width:210mm){.resume{width:100%}}
+#lock-screen {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: #1a1a2e; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; z-index: 9999;
+  color: #e0e0e0; font-family: 'Microsoft YaHei', sans-serif;
+}
+#lock-screen h2 { margin-bottom: 20px; color: #00e5ff; }
+#lock-screen input {
+  padding: 10px 16px; font-size: 16px; border: 2px solid #0f3460;
+  background: #16213e; color: #e0e0e0; border-radius: 6px; outline: none;
+  text-align: center; width: 200px;
+}
+#lock-screen button {
+  margin-top: 12px; padding: 10px 30px; font-size: 14px;
+  background: #0f3460; color: #00e5ff; border: 2px solid #00e5ff;
+  border-radius: 6px; cursor: pointer; font-weight: bold;
+}
+#lock-screen button:hover { background: #00e5ff; color: #16213e; }
+#lock-screen .err { color: #ff4d4d; margin-top: 10px; font-size: 13px; display: none; }
+#main-content { display: none; }
+#main-content.show { display: flex; justify-content: center; }
+
 </style>
 </head>
 <body>
+<div id="lock-screen">
+  <h2>&#x1f512; 需要密码</h2>
+  <input type="password" id="pwd" placeholder="输入密码" onkeydown="if(event.key==='Enter')checkPwd()">
+  <button onclick="checkPwd()">确 认</button>
+  <div class="err" id="err">密码错误，请重试</div>
+</div>
+
+<div id="main-content">
+
 
 <div class="resume">
 
@@ -115,5 +146,19 @@ body{
   </div>
 
 </div>
+</div>
+
+<script>
+const PASSWORD = '530530';
+function checkPwd() {
+  if (document.getElementById('pwd').value === PASSWORD) {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('main-content').classList.add('show');
+  } else {
+    document.getElementById('err').style.display = 'block';
+  }
+}
+</script>
+
 </body>
 </html>

@@ -2,10 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="百裏的个人技术博客，嵌入式/PLC/开源项目/游戏实践/工具箱 – 持久迭代，学无止境。">
-<meta name="theme-color" content="#0A2B4E">
-<title>百裏 · 持久迭代 | 嵌入式 & 创作无限</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="百裏·浅绿毛玻璃 | 滑动翻页博客 | 左侧标题右侧独立页面">
+<title>百裏 · 无限进步</title>
 
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,31 +14,21 @@
 
 <style>
 /* ============================================================
-   南孚国际版风格 · 持久能量科技感
+   景深毛玻璃 · 左侧固定标题｜右侧滑动翻页 (独立页面)
    ============================================================ */
 :root {
-  /* 深蓝主色调 + 亮蓝点缀 */
-  --navy-dark:    #0A2B4E;
-  --navy-mid:     #1E3A5F;
-  --blue-bright:  #3B82F6;
-  --blue-soft:    #60A5FA;
-  --blue-glow:    #2563EB;
-
-  --white:        #FFFFFF;
-  --gray-bg:      #F8FAFE;
-  --gray-card:    #FFFFFF;
-  --gray-border:  rgba(59,130,246,0.12);
-  --text-dark:    #1E293B;
-  --text-mid:     #475569;
-  --text-light:   #F1F5F9;
-
-  --shadow-sm:    0 10px 25px -5px rgba(0,0,0,0.05);
-  --shadow-md:    0 20px 35px -12px rgba(0,0,0,0.1);
-  --shadow-hover: 0 20px 40px -12px rgba(37,99,235,0.25);
-
-  --radius-md:    16px;
-  --radius-lg:    28px;
-  --transition:   0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  --bg-start:        #E8F3EC;
+  --bg-end:          #D4E8DA;
+  --glass-base:      rgba(235, 248, 235, 0.65);
+  --glass-edge:      rgba(80, 120, 90, 0.18);
+  --green-accent:    #2F855A;
+  --green-light:     #57B68C;
+  --text-dark:       #1A2E24;
+  --text-dim:        #406653;
+  --card-radius:     28px;
+  --sidebar-width:   280px;
+  --transition:      0.28s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  --snap-duration:   0.5s;
 }
 
 * {
@@ -49,728 +38,943 @@
 }
 
 body {
+  background: radial-gradient(ellipse at 30% 40%, var(--bg-start), var(--bg-end));
   font-family: 'Inter', sans-serif;
-  background: var(--white);
   color: var(--text-dark);
-  overflow-x: hidden;
-}
-
-/* 平滑滚动条 */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #E2E8F0; }
-::-webkit-scrollbar-thumb { background: var(--blue-bright); border-radius: 10px; }
-
-/* 导航栏 — 科技半透明 */
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(10,43,78,0.82);
-  backdrop-filter: blur(12px);
-  z-index: 200;
-  border-bottom: 1px solid rgba(96,165,250,0.15);
-}
-nav {
-  max-width: 1280px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  gap: 2.2rem;
-  padding: 0.9rem 1.5rem;
-}
-nav a {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  color: #E2E8F0;
-  text-decoration: none;
-  transition: 0.2s;
-}
-nav a.active, nav a:hover {
-  color: var(--blue-soft);
-  text-shadow: 0 0 6px rgba(96,165,250,0.4);
-}
-
-/* 滚动容器保留全屏沉浸，但增加现代感 */
-.scroll-container {
   height: 100vh;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-}
-.section {
-  scroll-snap-align: start;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  overflow: hidden;
   position: relative;
-  padding: 4rem 2rem;
-  background: var(--white);
-  transition: background 0.2s;
-}
-.section:nth-child(even) {
-  background: var(--gray-bg);
-}
-.section__inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-  opacity: 0;
-  transform: translateY(36px);
-  transition: opacity 0.7s var(--transition), transform 0.7s var(--transition);
-}
-.section.in-view .section__inner {
-  opacity: 1;
-  transform: translateY(0);
 }
 
-/* 全局科技光晕背景 */
-.glow-spot {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(87,182,108,0.12), transparent 60%),
+              radial-gradient(circle at 85% 70%, rgba(125,207,166,0.1), transparent 70%);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.25;
-}
-.glow-1 { width: 40vw; height: 40vw; background: radial-gradient(circle, var(--blue-bright), transparent); top: 10%; left: -10%; }
-.glow-2 { width: 35vw; height: 35vw; background: radial-gradient(circle, var(--blue-soft), transparent); bottom: 5%; right: -5%; }
-
-/* 标题样式 — 科技感上标 */
-.section-title {
-  display: inline-block;
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--blue-bright);
-  background: rgba(59,130,246,0.08);
-  padding: 0.3rem 1.2rem;
-  border-radius: 40px;
-  margin-bottom: 1rem;
-  backdrop-filter: blur(2px);
-}
-h2 {
-  font-size: 2.8rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--navy-dark), var(--blue-bright));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin-bottom: 1rem;
-}
-.caption {
-  color: var(--text-mid);
-  font-size: 0.9rem;
-  max-width: 600px;
-  margin: 0.5rem auto 0;
 }
 
-/* 卡片 — 硬朗悬浮 */
-.card-modern {
-  background: var(--gray-card);
-  border: 1px solid var(--gray-border);
-  border-radius: var(--radius-lg);
-  padding: 1.8rem 1.5rem;
-  transition: all 0.3s var(--transition);
-  box-shadow: var(--shadow-sm);
-}
-.card-modern:hover {
-  transform: translateY(-6px);
-  border-color: var(--blue-bright);
-  box-shadow: var(--shadow-hover);
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(30,60,40,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* 大数字展示块 (南孚风格核心) */
-.big-number-block {
+.depth-layout {
   display: flex;
-  justify-content: center;
-  gap: 2.5rem;
-  flex-wrap: wrap;
-  margin: 2rem 0;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: 2;
 }
-.stat-item {
-  text-align: center;
-  background: rgba(59,130,246,0.04);
-  backdrop-filter: blur(4px);
-  border-radius: 2rem;
-  padding: 1rem 1.8rem;
-  border: 1px solid rgba(59,130,246,0.15);
+
+/* ========= 左侧栏：固定标题 + 导航菜单 ========= */
+.sidebar-depth {
+  width: var(--sidebar-width);
+  background: rgba(225, 242, 225, 0.7);
+  backdrop-filter: blur(18px);
+  border-right: 1px solid var(--glass-edge);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  transition: all 0.3s;
+  box-shadow: 8px 0 25px -12px rgba(40, 70, 50, 0.15);
+  z-index: 10;
+  overflow-y: auto;
 }
-.stat-number {
-  font-size: 3rem;
+.sidebar-depth::-webkit-scrollbar { width: 3px; }
+
+.brand-depth {
+  text-align: left;
+  margin-bottom: 2.2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(47,133,90,0.25);
+}
+.avatar-depth {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--green-accent);
+  box-shadow: 0 0 15px rgba(47,133,90,0.25);
+  background: #FFFFFF;
+  margin-bottom: 1rem;
+}
+.brand-depth h1 {
+  font-size: 1.7rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #0A2B4E, #3B82F6);
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #1E4A2F, #2F855A);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  line-height: 1;
 }
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--text-mid);
-  letter-spacing: 1px;
+.brand-depth .tagline {
+  font-size: 0.7rem;
+  font-family: monospace;
+  color: var(--green-accent);
   margin-top: 0.3rem;
 }
 
-/* ========== HERO 全新 ========== */
-.hero {
-  background: linear-gradient(125deg, #FFFFFF 0%, #F0F7FF 100%);
-  position: relative;
-  overflow: hidden;
+.nav-depth {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin: 1.2rem 0 1.5rem;
 }
-.hero-grid {
+.nav-depth-item {
   display: flex;
   align-items: center;
-  gap: 3rem;
-  flex-wrap: wrap;
+  gap: 14px;
+  padding: 0.7rem 1rem;
+  border-radius: 60px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: var(--transition);
+  background: transparent;
+  border: 1px solid transparent;
 }
-.hero-left {
-  flex: 1.2;
+.nav-depth-item i {
+  width: 24px;
+  font-size: 1.1rem;
+  color: var(--green-accent);
 }
-.hero-badge {
-  color: var(--blue-bright);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 3px;
-  margin-bottom: 0.5rem;
+.nav-depth-item:hover {
+  background: rgba(47,133,90,0.15);
+  border-color: rgba(47,133,90,0.35);
+  color: var(--text-dark);
+  transform: translateX(6px);
+  backdrop-filter: blur(10px);
 }
-.hero-left h1 {
-  font-size: clamp(2.8rem, 6vw, 4.8rem);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: var(--navy-dark);
+.nav-depth-item.active {
+  background: rgba(47,133,90,0.25);
+  border-color: var(--green-accent);
+  color: var(--text-dark);
+  box-shadow: 0 6px 14px rgba(47,133,90,0.15);
 }
-.highlight-blue {
-  color: var(--blue-bright);
-  display: inline-block;
+
+.social-depth {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(47,133,90,0.2);
+}
+.social-icons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+.social-icons a {
+  color: var(--text-dim);
+  font-size: 1.2rem;
+  transition: 0.2s;
+}
+.social-icons a:hover {
+  color: var(--green-accent);
+  transform: translateY(-2px);
+  text-shadow: 0 0 6px rgba(47,133,90,0.4);
+}
+
+/* ========= 右侧内容区：滑动翻页容器 ========= */
+.content-depth {
+  flex: 1;
+  overflow: hidden;
   position: relative;
+  background: transparent;
 }
-.hero-desc {
-  font-size: 1rem;
-  color: var(--text-mid);
-  max-width: 480px;
-  margin: 1rem 0 1.5rem;
-  line-height: 1.6;
+
+/* 滑动页面容器 - 垂直滚动snap */
+.pages-container {
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
-.hero-tags {
+.pages-container::-webkit-scrollbar {
+  width: 5px;
+}
+.pages-container::-webkit-scrollbar-track {
+  background: rgba(60,100,70,0.1);
+  border-radius: 10px;
+}
+.pages-container::-webkit-scrollbar-thumb {
+  background: var(--green-accent);
+  border-radius: 10px;
+}
+
+/* 每个独立页面占满可视区域，scroll-snap */
+.page-snap {
+  scroll-snap-align: start;
+  min-height: 100%;
+  height: auto;
+  padding: 2rem 2.2rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* 页面内卡片样式 */
+.page-card {
+  background: var(--glass-base);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-edge);
+  border-radius: 28px;
+  padding: 1.8rem 2rem;
+  transition: all 0.35s ease;
+  box-shadow: 0 12px 28px -12px rgba(30, 60, 40, 0.12);
+  width: 100%;
+  max-width: 1200px;
+  margin: 1rem auto;
+  animation: fadeIn 0.4s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #1C4D2E, #2F855A);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+.section-sub {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  color: var(--green-accent);
+  border-left: 3px solid var(--green-accent);
+  padding-left: 0.9rem;
+  margin: 0.5rem 0 1.2rem;
+}
+
+/* 共用组件样式 */
+.skill-grid-depth {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+.skill-item-depth {
+  background: rgba(235, 248, 235, 0.7);
+  backdrop-filter: blur(4px);
+  border-radius: 20px;
+  padding: 1rem;
+  text-align: center;
+  transition: 0.25s;
+  border: 1px solid rgba(47,133,90,0.15);
+}
+.skill-item-depth:hover {
+  transform: translateY(-4px);
+  background: rgba(47,133,90,0.15);
+  border-color: var(--green-accent);
+}
+.skill-icon-depth { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+.skill-name-depth { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); }
+.skill-tag-depth { font-size: 0.65rem; color: var(--green-accent); font-family: monospace; }
+
+.game-grid-depth {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1.2rem;
+}
+.game-card-depth {
+  background: rgba(240, 252, 240, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 24px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: 0.25s;
+  border: 1px solid rgba(47,133,90,0.1);
+}
+.game-card-depth:hover {
+  transform: translateY(-6px);
+  border-color: var(--green-accent);
+  background: rgba(47,133,90,0.12);
+}
+.game-icon-depth { font-size: 2.4rem; }
+.game-title-depth { font-weight: 800; margin: 0.4rem 0; color: var(--text-dark); }
+.game-link-depth { color: var(--green-accent); text-decoration: none; font-size: 0.8rem; font-weight: 600; }
+
+.stats-depth {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 1.2rem 0 0.5rem;
+}
+.stat-card-depth {
+  background: rgba(210, 235, 210, 0.65);
+  backdrop-filter: blur(4px);
+  border-radius: 60px;
+  padding: 0.3rem 1.2rem;
+  border: 1px solid rgba(47,133,90,0.3);
+}
+.stat-number-depth {
+  font-weight: 800;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, #236B48, #2F855A);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.stat-label-depth { font-size: 0.7rem; color: var(--text-dim); }
+
+.tools-tabs-depth {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin-bottom: 1.8rem;
+  margin: 1rem 0 1.2rem;
 }
-.hero-tag {
-  background: rgba(59,130,246,0.08);
-  border: 1px solid rgba(59,130,246,0.2);
-  border-radius: 30px;
-  padding: 0.3rem 1rem;
+.tab-depth {
+  background: rgba(210, 235, 210, 0.7);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(47,133,90,0.2);
+  border-radius: 40px;
+  padding: 0.4rem 1.2rem;
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--navy-mid);
-  transition: 0.2s;
-}
-.hero-tag:hover {
-  background: rgba(59,130,246,0.2);
-  border-color: var(--blue-bright);
-  transform: translateY(-2px);
-}
-.btn-group {
-  display: flex;
-  gap: 1rem;
-}
-.btn-primary {
-  background: var(--navy-dark);
-  color: white;
-  padding: 0.7rem 1.8rem;
-  border-radius: 40px;
-  font-weight: 600;
-  transition: all 0.25s;
-  display: inline-block;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-}
-.btn-primary:hover {
-  background: var(--blue-bright);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 20px -12px rgba(59,130,246,0.5);
-}
-.btn-outline {
-  background: transparent;
-  border: 1.5px solid var(--navy-dark);
-  color: var(--navy-dark);
-  padding: 0.7rem 1.8rem;
-  border-radius: 40px;
-  font-weight: 600;
-  transition: 0.25s;
-  text-decoration: none;
-}
-.btn-outline:hover {
-  background: var(--navy-dark);
-  color: white;
-  transform: translateY(-3px);
-}
-
-.hero-right {
-  flex: 0.8;
-  display: flex;
-  justify-content: center;
-}
-.avatar-glow{
-  position:relative;width:180px;height:180px;
-}
-.avatar-glow::after{
-  content:'';position:absolute;inset:-6px;
-  border-radius:50%;
-  border:2px solid var(--blue-bright);
-  animation:avatar-pulse 2.5s ease-in-out infinite;
-  pointer-events:none;
-}
-@keyframes avatar-pulse{
-  0%,100%{transform:scale(1);opacity:.3}
-  50%{transform:scale(1.06);opacity:.7;box-shadow:0 0 20px rgba(59,130,246,.4)}
-}
-.battery-3d {
-  width: 240px;
-  filter: drop-shadow(0 20px 25px -8px rgba(0,0,0,0.15));
-  animation: float 3s ease-in-out infinite;
-  background: radial-gradient(ellipse at 30% 35%, #3B82F6, #1E3A5F);
-  border-radius: 40px;
-  padding: 2rem 1rem;
-  text-align: center;
-  box-shadow: 0 25px 40px -12px #3B82F640;
-}
-.battery-3d i {
-  font-size: 7rem;
-  color: white;
-  text-shadow: 0 5px 12px rgba(0,0,0,0.2);
-}
-.battery-3d p {
-  color: white;
-  font-weight: 600;
-  margin-top: 0.8rem;
-  letter-spacing: 2px;
-}
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
-  100% { transform: translateY(0px); }
-}
-
-/* 技能网格 (卡片升级) */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 1.2rem;
-  margin: 2rem 0;
-}
-.skill-card {
-  background: white;
-  border-radius: var(--radius-md);
-  padding: 1.5rem 1rem;
-  text-align: center;
-  transition: all 0.3s;
-  border: 1px solid rgba(59,130,246,0.12);
-  box-shadow: var(--shadow-sm);
-}
-.skill-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--blue-bright);
-  box-shadow: 0 20px 30px -15px rgba(59,130,246,0.2);
-}
-.skill-card__icon { font-size: 2.2rem; margin-bottom: 0.5rem; display: block; }
-.skill-card__name { font-weight: 700; margin-bottom: 0.2rem; }
-.skill-card__tag { font-size: 0.7rem; color: var(--blue-bright); font-family: monospace; }
-
-/* games / tool 卡片风格统一 */
-.games-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin: 2rem 0;
-}
-.game-card {
-  background: white;
-  border-radius: var(--radius-lg);
-  padding: 1.8rem 1rem;
-  transition: all 0.3s;
-  border: 1px solid rgba(59,130,246,0.1);
-  box-shadow: var(--shadow-sm);
-  text-align: center;
-}
-.game-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  border-color: var(--blue-bright);
-  box-shadow: var(--shadow-hover);
-}
-.game-card__icon { font-size: 2.6rem; margin-bottom: 0.7rem; }
-.game-card__title { font-weight: 800; margin-bottom: 0.3rem; }
-.game-card__link { color: var(--blue-bright); font-weight: 600; text-decoration: none; }
-
-/* 工具箱选项卡 */
-.tools-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin: 1.5rem 0;
-}
-.tools-tab {
-  background: rgba(59,130,246,0.05);
-  border: 1px solid rgba(59,130,246,0.15);
-  border-radius: 40px;
-  padding: 0.4rem 1rem;
-  font-weight: 500;
   cursor: pointer;
   transition: 0.2s;
+  color: var(--text-dark);
 }
-.tools-tab.active, .tools-tab:hover {
-  background: var(--blue-bright);
+.tab-depth.active, .tab-depth:hover {
+  background: var(--green-accent);
   color: white;
-  border-color: var(--blue-bright);
+  border-color: transparent;
+  box-shadow: 0 5px 12px rgba(47,133,90,0.25);
 }
-.tool-grid {
+.tool-grid-depth {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;
-  max-height: 55vh;
+  max-height: 400px;
   overflow-y: auto;
-  padding: 0.3rem;
 }
-.tool-card {
-  background: white;
-  border-radius: 18px;
-  padding: 1rem;
-  border: 1px solid #eef2ff;
-  transition: 0.2s;
-}
-.tool-card:hover {
-  border-color: var(--blue-bright);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 20px -12px rgba(0,0,0,0.1);
-}
-.tool-card__top { display: flex; gap: 0.6rem; align-items: center; margin-bottom: 0.4rem; }
-.tool-card__title { font-weight: 700; }
-.tool-card__desc { font-size: 0.75rem; color: var(--text-mid); }
-
-/* 评论区域 */
-.comments-wrap {
-  background: rgba(255,255,255,0.7);
+.tool-card-depth {
+  background: rgba(245, 255, 245, 0.75);
   backdrop-filter: blur(4px);
-  border-radius: 28px;
+  border-radius: 20px;
   padding: 1rem;
-  border: 1px solid rgba(59,130,246,0.2);
-  margin-top: 1.5rem;
+  transition: 0.2s;
+  border: 1px solid rgba(47,133,90,0.12);
 }
+.tool-card-depth:hover {
+  background: rgba(47,133,90,0.1);
+  border-color: var(--green-accent);
+}
+.tool-top-depth { display: flex; gap: 0.7rem; align-items: center; margin-bottom: 0.3rem; }
+.tool-title-depth { font-weight: 700; color: var(--text-dark); }
+.tool-desc-depth { font-size: 0.7rem; color: var(--text-dim); }
+.tag-group-depth { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.5rem 0; }
+.tag-depth { background: rgba(60,100,70,0.15); padding: 0.1rem 0.5rem; border-radius: 20px; font-size: 0.65rem; color: var(--green-accent); }
 
-/* 页脚/联系 */
-.contact-grid {
+.comments-wrap-depth {
+  background: rgba(230, 245, 230, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 28px;
+  padding: 0.8rem;
+  margin-top: 0.5rem;
+}
+.contact-depth {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 1.5rem;
-  margin: 2rem 0;
+  gap: 0.8rem;
+  margin: 1rem 0;
 }
-.contact-item {
-  background: rgba(59,130,246,0.05);
-  padding: 0.6rem 1.4rem;
+.contact-item-depth {
+  background: rgba(225, 240, 225, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 0.5rem 1.2rem;
   border-radius: 40px;
-  border: 1px solid rgba(59,130,246,0.2);
-  transition: 0.2s;
   text-decoration: none;
   color: var(--text-dark);
-  font-weight: 500;
+  font-size: 0.8rem;
+  border: 1px solid rgba(47,133,90,0.2);
+  transition: 0.2s;
 }
-.contact-item:hover {
-  background: var(--blue-bright);
+.contact-item-depth:hover {
+  background: var(--green-accent);
   color: white;
-  border-color: var(--blue-bright);
+  transform: translateY(-2px);
 }
-.footer {
+.footer-depth {
   text-align: center;
-  font-size: 0.75rem;
-  color: var(--text-mid);
-  margin-top: 2rem;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(47,133,90,0.2);
+  padding-top: 1rem;
 }
 
-/* 进度条 + 返回顶部 */
-.scroll-progress {
+/* 返回顶部按钮 */
+.backtotop-depth {
   position: fixed;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 30vh;
-  background: rgba(59,130,246,0.2);
-  border-radius: 4px;
-  z-index: 100;
-}
-.progress-fill {
-  width: 100%;
-  background: var(--blue-bright);
-  border-radius: 4px;
-  transition: height 0.1s;
-}
-.back-to-top {
-  position: fixed;
-  right: 20px;
-  bottom: 24px;
+  bottom: 28px;
+  right: 28px;
+  background: rgba(210, 235, 210, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--green-accent);
   width: 44px;
   height: 44px;
   border-radius: 30px;
-  background: var(--navy-dark);
-  color: white;
-  border: none;
+  color: var(--green-accent);
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
   transition: 0.25s;
-  z-index: 100;
+  z-index: 99;
 }
-.back-to-top.show {
-  opacity: 0.9;
+.backtotop-depth.show {
+  opacity: 1;
   visibility: visible;
 }
-.back-to-top:hover {
-  background: var(--blue-bright);
+.backtotop-depth:hover {
+  background: var(--green-accent);
+  color: white;
   transform: translateY(-3px);
+  box-shadow: 0 0 12px rgba(47,133,90,0.4);
 }
 
+/* 响应式 */
 @media (max-width: 800px) {
-  .hero-grid { flex-direction: column; text-align: center; }
-  .hero-left { text-align: center; }
-  .hero-tags { justify-content: center; }
-  .btn-group { justify-content: center; }
-  .stat-number { font-size: 2rem; }
-  .section { padding: 3rem 1rem; }
-  nav { gap: 1rem; }
+  .depth-layout {
+    flex-direction: column;
+  }
+  .sidebar-depth {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 1rem;
+    gap: 1rem;
+    align-items: center;
+    border-right: none;
+    border-bottom: 1px solid var(--glass-edge);
+  }
+  .brand-depth {
+    border-bottom: none;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 0;
+  }
+  .avatar-depth {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0;
+  }
+  .brand-depth h1 { font-size: 1.2rem; }
+  .nav-depth {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin: 0;
+  }
+  .nav-depth-item {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.7rem;
+  }
+  .social-depth { display: none; }
+  .page-snap {
+    padding: 1rem;
+  }
+  .page-card {
+    padding: 1.2rem;
+  }
+  .page-title {
+    font-size: 1.4rem;
+  }
 }
 </style>
 </head>
-
 <body>
-<header>
-  <nav>
-    <a href="#section0" class="active">首页</a>
-    <a href="#section1">技能</a>
-    <a href="#skills">AI技能</a>
-    <a href="#section2">游戏</a>
-    <a href="#section3">工具</a>
-    <a href="#section4">留言</a>
-    <a href="#section5">联系</a>
-  </nav>
-</header>
 
-<main class="scroll-container">
-  <!-- HERO 南孚科技版 -->
-  <section class="section" id="section0" data-index="0">
-    <div class="glow-spot glow-1"></div>
-    <div class="section__inner">
-      <div class="hero-grid">
-        <div class="hero-left">
-          <div class="hero-badge"><i class="fas fa-microchip"></i> 持续迭代</div>
-          <h1>百裏<span class="highlight-blue">.</span><br>持久迭代·无限可能</h1>
-          <div class="hero-desc">嵌入式 / PLC / 开源实践 —— 从 0 到 1，再到 ∞。代码即思考，迭代无终点。</div>
-          <div class="hero-tags">
-            <span class="hero-tag">🔌 ESP32/STM32</span>
-            <span class="hero-tag">🏭 三菱 GX2</span>
-            <span class="hero-tag">🔄 Git 版本流</span>
-            <span class="hero-tag">📐 SolidWorks</span>
-          </div>
-          <div class="btn-group">
-            <a href="#section1" class="btn-primary">探索技术栈 <i class="fas fa-arrow-right"></i></a>
-            <a href="https://github.com/bailidashi" target="_blank" class="btn-outline"><i class="fab fa-github"></i> GitHub</a>
-          </div>
-          <!-- 大数字数据墙（南孚风格核心） -->
-          <div class="big-number-block">
-            <div class="stat-item"><div class="stat-number">∞</div><div class="stat-label">无界学习</div></div>
-            <div class="stat-item"><div class="stat-number">12+</div><div class="stat-label">项目实践</div></div>
-            <div class="stat-item"><div class="stat-number">345%</div><div class="stat-label">思维续航</div></div>
-          </div>
-        </div>
-        <div class="hero-right">
-          <div class="avatar-glow">
-            <img src="我的头像.jpg" alt="百裏 头像" style="width:180px;height:180px;border-radius:50%;object-fit:cover;display:block" loading="lazy" onerror="this.src='https://placehold.co/180x180?text=avatar'">
-          </div>
-        </div>
+<div class="depth-layout">
+  <!-- 左侧栏 -->
+  <aside class="sidebar-depth">
+    <div class="brand-depth">
+      <img src="我的头像.jpg" class="avatar-depth" alt="百裏" onerror="this.src='https://placehold.co/76x76?text=百里'">
+      <h1>百裏·无限进步</h1>
+      <div class="tagline"><i class="fas fa-leaf"></i> 滑动翻页</div>
+    </div>
+    <div class="nav-depth" id="navMenuDepth">
+      <div class="nav-depth-item active" data-page="intro"><i class="fas fa-home"></i> 我的项目</div>
+      <div class="nav-depth-item" data-page="skills"><i class="fas fa-microchip"></i> 我会的</div>
+      <div class="nav-depth-item" data-page="aiskills"><i class="fas fa-robot"></i> 我的SKILL</div>
+      <div class="nav-depth-item" data-page="games"><i class="fas fa-gamepad"></i> 我的小游戏</div>
+      <div class="nav-depth-item" data-page="tools"><i class="fas fa-toolbox"></i> 有趣的网站</div>
+      <div class="nav-depth-item" data-page="comments"><i class="fas fa-comments"></i> 留言</div>
+      <div class="nav-depth-item" data-page="contact"><i class="fas fa-paper-plane"></i> 我的社交媒体</div>
+    </div>
+    <div class="social-depth">
+      <div style="font-size: 0.7rem;"><i class="fas fa-map-marker-alt"></i> 千里广大</div>
+      <div class="social-icons">
+        <a href="https://github.com/bailidashi" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="https://space.bilibili.com/514882301" target="_blank"><i class="fab fa-bilibili"></i></a>
+        <a href="mailto:3154997545@qq.com"><i class="far fa-envelope"></i></a>
       </div>
     </div>
-  </section>
+  </aside>
 
-  <!-- SKILLS 区块 -->
-  <section class="section" id="section1" data-index="1">
-    <div class="section__inner">
-      <span class="section-title">技术专长</span>
-      <h2>技术能量核心</h2>
-      <div class="skills-grid">
-        <div class="skill-card"><span class="skill-card__icon">🔌</span><div class="skill-card__name">ESP32 / STM32</div><div class="skill-card__tag">嵌入式</div></div>
-        <div class="skill-card"><span class="skill-card__icon">🏭</span><div class="skill-card__name">三菱 GX2</div><div class="skill-card__tag">PLC</div></div>
-        <div class="skill-card"><span class="skill-card__icon"><i class="fab fa-git-alt"></i></span><div class="skill-card__name">Git 基础</div><div class="skill-card__tag">版本控制</div></div>
-        <a href="resume.html" style="text-decoration:none;color:inherit"><div class="skill-card"><span class="skill-card__icon">👨‍🏫</span><div class="skill-card__name">家教经验</div><div class="skill-card__tag">教学 →</div></div></a>
-        <div class="skill-card"><span class="skill-card__icon">📐</span><div class="skill-card__name">SolidWorks / UG</div><div class="skill-card__tag">建模</div></div>
-      </div>
-      <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-      <p class="caption">📊 已有 <span id="busuanzi_value_site_pv">—</span> 次能量注入 · 持续进化</p>
-      <p class="caption" style="margin-top:0.5rem;">嵌入逻辑，炙于好奇</p>
-    </div>
-  </section>
+  <!-- 右侧：滑动翻页容器 -->
+  <div class="content-depth" id="contentDepth">
+    <div class="pages-container" id="pagesContainer"></div>
+  </div>
+</div>
 
-  <!-- CLAUDE SKILLS (保留自定义) -->
-  <section class="section" id="skills" style="background:#F1F5F9;">
-    <div class="section__inner">
-      <span class="section-title">AI 技能</span>
-      <h2>AI 增强工作流</h2>
-      <div class="skills-grid" style="grid-template-columns:repeat(3,1fr);">
-        <a href="skills/design-hero.md" style="text-decoration:none;color:inherit;"><div class="skill-card"><span class="skill-card__icon">🎨</span><div class="skill-card__name">设计优化</div><div class="skill-card__tag">design-hero</div><p style="font-size:0.7rem;margin-top:0.3rem;">8套配色+动效</p></div></a>
-        <a href="skills/publish.md" style="text-decoration:none;color:inherit;"><div class="skill-card"><span class="skill-card__icon">🚀</span><div class="skill-card__name">一键发布</div><div class="skill-card__tag">publish</div><p style="font-size:0.7rem;margin-top:0.3rem;">Git 自动提交</p></div></a>
-        <a href="skills/hello.md" style="text-decoration:none;color:inherit;"><div class="skill-card"><span class="skill-card__icon">👋</span><div class="skill-card__name">你好测试</div><div class="skill-card__tag">hello</div><p style="font-size:0.7rem;margin-top:0.3rem;">首个 Skill 验证</p></div></a>
-      </div>
-      <p class="caption">由 Claude Code 驱动 · 自动化开发流</p>
-    </div>
-  </section>
-
-  <!-- GAMES 区块 -->
-  <section class="section" id="section2" data-index="2">
-    <div class="section__inner">
-      <span class="section-title">游戏空间</span>
-      <h2>代码与反应的交叉点</h2>
-      <div class="games-grid">
-        <div class="game-card"><span class="game-card__icon">🐍</span><div class="game-card__title">贪吃蛇</div><div class="game-card__desc">经典方向控制</div><a href="snake.html" class="game-card__link">开始游戏 →</a></div>
-        <div class="game-card"><span class="game-card__icon">🏃‍♂️</span><div class="game-card__title">奔跑的哥哥</div><div class="game-card__desc">无尽跑酷挑战</div><a href="dinosaur.html" class="game-card__link">开始跑酷 →</a></div>
-        <div class="game-card"><span class="game-card__icon">🧩</span><div class="game-card__title">俄罗斯方块</div><div class="game-card__desc">经典消除</div><a href="tetris.html" class="game-card__link">开始挑战 →</a></div>
-        <div class="game-card"><span class="game-card__icon"><i class="fab fa-github"></i></span><div class="game-card__title">GitHub</div><div class="game-card__desc">开源学习记录</div><a href="https://github.com/bailidashi" target="_blank" class="game-card__link">访问主页 →</a></div>
-      </div>
-      <p class="caption">游戏即实践——代码与反应的交叉点</p>
-    </div>
-  </section>
-
-  <!-- TOOLS 工具箱 -->
-  <section class="section" id="section3" data-index="3">
-    <div class="section__inner">
-      <span class="section-title">技术生态</span>
-      <h2>心智兵工厂</h2>
-      <div class="tools-tabs" id="toolTabs">
-        <button class="tools-tab active" data-cat="dev">开发</button>
-        <button class="tools-tab" data-cat="design">设计</button>
-        <button class="tools-tab" data-cat="ai">AI</button>
-        <button class="tools-tab" data-cat="prod">效率</button>
-        <button class="tools-tab" data-cat="learn">学习</button>
-      </div>
-      <div id="toolboxGrid" class="tool-grid"></div>
-    </div>
-  </section>
-
-  <!-- COMMENTS 评论区 -->
-  <section class="section" id="section4" data-index="4">
-    <div class="section__inner">
-      <span class="section-title">留言区</span>
-      <h2>航行日志 · 留言区</h2>
-      <div class="comments-wrap">
-        <div id="cusdis_thread"
-             data-host="https://cusdis.com"
-             data-app-id="f86b717c-f4a3-4b29-be61-42c62e2a254e"
-             data-page-id="bailidashi-home"
-             data-page-url="https://bailidashi.github.io"
-             data-page-title="百裏 · 持久迭代"
-             data-theme="light">
-        </div>
-        <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT 底部 -->
-  <section class="section" id="section5" data-index="5">
-    <div class="section__inner">
-      <span class="section-title">保持联系</span>
-      <h2>持续迭代 没有终点</h2>
-      <div class="contact-grid">
-        <a href="mailto:3154997545@qq.com" class="contact-item"><i class="far fa-envelope"></i> 3154997545@qq.com</a>
-        <a href="https://github.com/bailidashi" target="_blank" class="contact-item"><i class="fab fa-github"></i> GitHub</a>
-        <a href="https://space.bilibili.com/514882301" target="_blank" class="contact-item"><i class="fab fa-bilibili"></i> B站主页</a>
-        <span class="contact-item"><i class="fas fa-map-marker-alt"></i> 重庆 · 迭代中</span>
-      </div>
-      <footer class="footer">
-        <code>&lt;/&gt; 用 ❤️ 和持久迭代构建</code><br>
-        © 2025 bailidashi · 学无止境 · 没有最终版<br>
-        <span class="caption">∞ iterations | 持久能量驱动</span>
-      </footer>
-    </div>
-  </section>
-</main>
-
-<div class="scroll-progress"><div class="progress-fill" id="progressFill"></div></div>
-<button class="back-to-top" aria-label="返回顶部"><i class="fas fa-arrow-up"></i></button>
+<button class="backtotop-depth" id="backToTopDepth"><i class="fas fa-arrow-up"></i></button>
 
 <script>
-  // 导航高亮 & 视口动画
-  const sections = document.querySelectorAll('.section');
-  const navLinks = document.querySelectorAll('nav a');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        const idx = entry.target.dataset.index;
-        if(idx !== undefined) {
-          navLinks.forEach(l => l.classList.remove('active'));
-          navLinks[idx]?.classList.add('active');
-        }
+  // ---------- 定义每个页面的HTML内容 ----------
+  const pagesContent = {
+    intro: `
+      <div class="page-card">
+        <div class="page-title">🌿 清新迭代引擎</div>
+        <div class="section-sub">嵌入式 · PLC · 开源创客</div>
+        <p style="margin-bottom: 1rem; line-height: 1.5;">从硬件底层到云端协同，秉持代码即思考，记录每一个迭代瞬间。浅绿玻璃之下，技术自在呼吸。</p>
+        <div class="stats-depth">
+          <div class="stat-card-depth"><span class="stat-number-depth">∞</span> <span class="stat-label-depth">无界学习</span></div>
+          <div class="stat-card-depth"><span class="stat-number-depth">12+</span> <span class="stat-label-depth">落地项目</span></div>
+          <div class="stat-card-depth"><span class="stat-number-depth">345%</span> <span class="stat-label-depth">思维续航</span></div>
+        </div>
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem;">
+          <span style="background:rgba(47,133,90,0.15); border-radius:30px; padding:0.2rem 1rem; font-size:0.7rem;">🔌 ESP32/STM32</span>
+          <span style="background:rgba(47,133,90,0.15); border-radius:30px; padding:0.2rem 1rem; font-size:0.7rem;">🏭 三菱 GX2</span>
+          <span style="background:rgba(47,133,90,0.15); border-radius:30px; padding:0.2rem 1rem; font-size:0.7rem;">📐 SolidWorks</span>
+        </div>
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"><\/script>
+        <p style="margin-top: 1rem; font-size:0.75rem; opacity:0.8;"><i class="fas fa-seedling"></i> 能量注入 <span id="busuanzi_value_site_pv">—</span> 次 · 学无止境</p>
+      </div>
+    `,
+    skills: `
+      <div class="page-card">
+        <div class="page-title">🧠 技术能量核心</div>
+        <div class="section-sub">嵌入式 · 工业控制 · 设计协作</div>
+        <div class="skill-grid-depth">
+          <div class="skill-item-depth"><span class="skill-icon-depth">🔌</span><div class="skill-name-depth">ESP32/STM32</div><div class="skill-tag-depth">嵌入式</div></div>
+          <div class="skill-item-depth"><span class="skill-icon-depth">🏭</span><div class="skill-name-depth">三菱 GX2</div><div class="skill-tag-depth">PLC</div></div>
+          <div class="skill-item-depth"><span class="skill-icon-depth"><i class="fab fa-git-alt"></i></span><div class="skill-name-depth">Git 工作流</div><div class="skill-tag-depth">版本控制</div></div>
+          <a href="resume.html" style="text-decoration:none; color:inherit;"><div class="skill-item-depth"><span class="skill-icon-depth">👨‍🏫</span><div class="skill-name-depth">家教经验</div><div class="skill-tag-depth">教学相长</div></div></a>
+          <div class="skill-item-depth"><span class="skill-icon-depth">📐</span><div class="skill-name-depth">SolidWorks/UG</div><div class="skill-tag-depth">三维建模</div></div>
+        </div>
+      </div>
+    `,
+    aiskills: `
+      <div class="page-card">
+        <div class="page-title">🤖 AI 增强工作流</div>
+        <div class="section-sub">Claude Code · 自动化开发流</div>
+        <div class="skill-grid-depth" style="grid-template-columns: repeat(auto-fill, minmax(170px,1fr));">
+          <a href="skills/design-hero.md" style="text-decoration:none; color:inherit;"><div class="skill-item-depth"><span class="skill-icon-depth">🎨</span><div class="skill-name-depth">设计优化</div><div class="skill-tag-depth">design-hero</div><p style="font-size:0.7rem; margin-top:0.2rem;">8套配色+动效</p></div></a>
+          <a href="skills/publish.md" style="text-decoration:none; color:inherit;"><div class="skill-item-depth"><span class="skill-icon-depth">🚀</span><div class="skill-name-depth">一键发布</div><div class="skill-tag-depth">publish</div><p style="font-size:0.7rem; margin-top:0.2rem;">Git 自动提交</p></div></a>
+          <a href="skills/hello.md" style="text-decoration:none; color:inherit;"><div class="skill-item-depth"><span class="skill-icon-depth">👋</span><div class="skill-name-depth">你好测试</div><div class="skill-tag-depth">hello</div><p style="font-size:0.7rem; margin-top:0.2rem;">首个 Skill 验证</p></div></a>
+        </div>
+      </div>
+    `,
+    games: `
+      <div class="page-card">
+        <div class="page-title">🎮 代码与反应的交叉点</div>
+        <div class="section-sub">经典游戏 + 开源实践</div>
+        <div class="game-grid-depth">
+          <div class="game-card-depth"><span class="game-icon-depth">🐍</span><div class="game-title-depth">贪吃蛇</div><div style="font-size:0.7rem;">经典方向控制</div><a href="snake.html" class="game-link-depth">开始游戏 →</a></div>
+          <div class="game-card-depth"><span class="game-icon-depth">🏃‍♂️</span><div class="game-title-depth">奔跑的哥哥</div><div style="font-size:0.7rem;">无尽跑酷</div><a href="dinosaur.html" class="game-link-depth">开始跑酷 →</a></div>
+          <div class="game-card-depth"><span class="game-icon-depth">🧩</span><div class="game-title-depth">俄罗斯方块</div><div style="font-size:0.7rem;">经典消除</div><a href="tetris.html" class="game-link-depth">开始挑战 →</a></div>
+          <div class="game-card-depth"><svg class="game-icon-depth" width="60" height="56" viewBox="0 0 15 14" style="image-rendering:pixelated;">
+<rect x="11" y="0" width="1" height="1" fill="#802828"/>
+<rect x="10" y="1" width="1" height="1" fill="#802828"/>
+<rect x="11" y="1" width="1" height="1" fill="#802828"/>
+<rect x="12" y="1" width="1" height="1" fill="#802828"/>
+<rect x="5" y="2" width="1" height="1" fill="#7149a5"/>
+<rect x="6" y="2" width="1" height="1" fill="#7149a5"/>
+<rect x="7" y="2" width="1" height="1" fill="#7149a5"/>
+<rect x="8" y="2" width="1" height="1" fill="#7149a5"/>
+<rect x="9" y="2" width="1" height="1" fill="#7149a5"/>
+<rect x="10" y="2" width="1" height="1" fill="#7149a5"/>
+<rect x="11" y="2" width="1" height="1" fill="#802828"/>
+<rect x="12" y="2" width="1" height="1" fill="#802828"/>
+<rect x="13" y="2" width="1" height="1" fill="#802828"/>
+<rect x="3" y="3" width="1" height="1" fill="#7149a5"/>
+<rect x="4" y="3" width="1" height="1" fill="#7149a5"/>
+<rect x="5" y="3" width="1" height="1" fill="#d6b0e0"/>
+<rect x="6" y="3" width="1" height="1" fill="#d8b1df"/>
+<rect x="7" y="3" width="1" height="1" fill="#d8b1df"/>
+<rect x="8" y="3" width="1" height="1" fill="#9f7fd3"/>
+<rect x="9" y="3" width="1" height="1" fill="#8f63b8"/>
+<rect x="10" y="3" width="1" height="1" fill="#8f63b8"/>
+<rect x="11" y="3" width="1" height="1" fill="#8f63b8"/>
+<rect x="12" y="3" width="1" height="1" fill="#802828"/>
+<rect x="13" y="3" width="1" height="1" fill="#321b4f"/>
+<rect x="2" y="4" width="1" height="1" fill="#7149a5"/>
+<rect x="3" y="4" width="1" height="1" fill="#8f63b8"/>
+<rect x="4" y="4" width="1" height="1" fill="#d8b1df"/>
+<rect x="5" y="4" width="1" height="1" fill="#f4d4e2"/>
+<rect x="6" y="4" width="1" height="1" fill="#f4d4e2"/>
+<rect x="7" y="4" width="1" height="1" fill="#d6b0e0"/>
+<rect x="8" y="4" width="1" height="1" fill="#d8b1df"/>
+<rect x="9" y="4" width="1" height="1" fill="#9f7fd3"/>
+<rect x="10" y="4" width="1" height="1" fill="#7149a5"/>
+<rect x="11" y="4" width="1" height="1" fill="#8f63b8"/>
+<rect x="12" y="4" width="1" height="1" fill="#8f63b8"/>
+<rect x="13" y="4" width="1" height="1" fill="#321b4f"/>
+<rect x="1" y="5" width="1" height="1" fill="#7149a5"/>
+<rect x="2" y="5" width="1" height="1" fill="#8f63b8"/>
+<rect x="3" y="5" width="1" height="1" fill="#9f7fd3"/>
+<rect x="4" y="5" width="1" height="1" fill="#d8b1df"/>
+<rect x="5" y="5" width="1" height="1" fill="#f4d4e2"/>
+<rect x="6" y="5" width="1" height="1" fill="#f4d4e2"/>
+<rect x="7" y="5" width="1" height="1" fill="#d6b0e0"/>
+<rect x="8" y="5" width="1" height="1" fill="#d8b1df"/>
+<rect x="9" y="5" width="1" height="1" fill="#7149a5"/>
+<rect x="10" y="5" width="1" height="1" fill="#9f7fd3"/>
+<rect x="11" y="5" width="1" height="1" fill="#7149a5"/>
+<rect x="12" y="5" width="1" height="1" fill="#8f63b8"/>
+<rect x="13" y="5" width="1" height="1" fill="#7149a5"/>
+<rect x="14" y="5" width="1" height="1" fill="#321b4f"/>
+<rect x="1" y="6" width="1" height="1" fill="#7149a5"/>
+<rect x="2" y="6" width="1" height="1" fill="#9f7fd3"/>
+<rect x="3" y="6" width="1" height="1" fill="#9f7fd3"/>
+<rect x="4" y="6" width="1" height="1" fill="#9f7fd3"/>
+<rect x="5" y="6" width="1" height="1" fill="#d8b1df"/>
+<rect x="6" y="6" width="1" height="1" fill="#d8b1df"/>
+<rect x="7" y="6" width="1" height="1" fill="#d8b1df"/>
+<rect x="8" y="6" width="1" height="1" fill="#9f7fd3"/>
+<rect x="9" y="6" width="1" height="1" fill="#9f7fd3"/>
+<rect x="10" y="6" width="1" height="1" fill="#7149a5"/>
+<rect x="11" y="6" width="1" height="1" fill="#9f7fd3"/>
+<rect x="12" y="6" width="1" height="1" fill="#8f63b8"/>
+<rect x="13" y="6" width="1" height="1" fill="#8f63b8"/>
+<rect x="14" y="6" width="1" height="1" fill="#321b4f"/>
+<rect x="0" y="7" width="1" height="1" fill="#7149a5"/>
+<rect x="1" y="7" width="1" height="1" fill="#7149a5"/>
+<rect x="2" y="7" width="1" height="1" fill="#8f63b8"/>
+<rect x="3" y="7" width="1" height="1" fill="#9f7fd3"/>
+<rect x="4" y="7" width="1" height="1" fill="#9f7fd3"/>
+<rect x="5" y="7" width="1" height="1" fill="#9f7fd3"/>
+<rect x="6" y="7" width="1" height="1" fill="#9f7fd3"/>
+<rect x="7" y="7" width="1" height="1" fill="#9f7fd3"/>
+<rect x="8" y="7" width="1" height="1" fill="#9f7fd3"/>
+<rect x="9" y="7" width="1" height="1" fill="#9f7fd3"/>
+<rect x="10" y="7" width="1" height="1" fill="#9f7fd3"/>
+<rect x="11" y="7" width="1" height="1" fill="#9f7fd3"/>
+<rect x="12" y="7" width="1" height="1" fill="#8f63b8"/>
+<rect x="13" y="7" width="1" height="1" fill="#8f63b8"/>
+<rect x="14" y="7" width="1" height="1" fill="#7149a5"/>
+<rect x="15" y="7" width="1" height="1" fill="#321b4f"/>
+<rect x="0" y="8" width="1" height="1" fill="#7149a5"/>
+<rect x="1" y="8" width="1" height="1" fill="#8f63b8"/>
+<rect x="2" y="8" width="1" height="1" fill="#8f63b8"/>
+<rect x="3" y="8" width="1" height="1" fill="#2f1f44"/>
+<rect x="4" y="8" width="1" height="1" fill="#9f7fd3"/>
+<rect x="5" y="8" width="1" height="1" fill="#9f7fd3"/>
+<rect x="6" y="8" width="1" height="1" fill="#331c4a"/>
+<rect x="7" y="8" width="1" height="1" fill="#331c4a"/>
+<rect x="8" y="8" width="1" height="1" fill="#331c4a"/>
+<rect x="9" y="8" width="1" height="1" fill="#9f7fd3"/>
+<rect x="10" y="8" width="1" height="1" fill="#2f1f44"/>
+<rect x="11" y="8" width="1" height="1" fill="#9f7fd3"/>
+<rect x="12" y="8" width="1" height="1" fill="#9f7fd3"/>
+<rect x="13" y="8" width="1" height="1" fill="#8f63b8"/>
+<rect x="14" y="8" width="1" height="1" fill="#8f63b8"/>
+<rect x="15" y="8" width="1" height="1" fill="#7149a5"/>
+<rect x="16" y="8" width="1" height="1" fill="#321b4f"/>
+<rect x="0" y="9" width="1" height="1" fill="#7149a5"/>
+<rect x="1" y="9" width="1" height="1" fill="#a83b3f"/>
+<rect x="2" y="9" width="1" height="1" fill="#a83b3f"/>
+<rect x="3" y="9" width="1" height="1" fill="#9f7fd3"/>
+<rect x="4" y="9" width="1" height="1" fill="#9f7fd3"/>
+<rect x="5" y="9" width="1" height="1" fill="#331c4a"/>
+<rect x="6" y="9" width="1" height="1" fill="#331c4a"/>
+<rect x="7" y="9" width="1" height="1" fill="#331c4a"/>
+<rect x="8" y="9" width="1" height="1" fill="#9f7fd3"/>
+<rect x="9" y="9" width="1" height="1" fill="#9f7fd3"/>
+<rect x="10" y="9" width="1" height="1" fill="#9f7fd3"/>
+<rect x="11" y="9" width="1" height="1" fill="#a83b3f"/>
+<rect x="12" y="9" width="1" height="1" fill="#a83b3f"/>
+<rect x="13" y="9" width="1" height="1" fill="#8f63b8"/>
+<rect x="14" y="9" width="1" height="1" fill="#7149a5"/>
+<rect x="15" y="9" width="1" height="1" fill="#321b4f"/>
+<rect x="0" y="10" width="1" height="1" fill="#7149a5"/>
+<rect x="1" y="10" width="1" height="1" fill="#7149a5"/>
+<rect x="2" y="10" width="1" height="1" fill="#8f63b8"/>
+<rect x="3" y="10" width="1" height="1" fill="#8f63b8"/>
+<rect x="4" y="10" width="1" height="1" fill="#9f7fd3"/>
+<rect x="5" y="10" width="1" height="1" fill="#9f7fd3"/>
+<rect x="6" y="10" width="1" height="1" fill="#9f7fd3"/>
+<rect x="7" y="10" width="1" height="1" fill="#9f7fd3"/>
+<rect x="8" y="10" width="1" height="1" fill="#9f7fd3"/>
+<rect x="9" y="10" width="1" height="1" fill="#9f7fd3"/>
+<rect x="10" y="10" width="1" height="1" fill="#8f63b8"/>
+<rect x="11" y="10" width="1" height="1" fill="#8f63b8"/>
+<rect x="12" y="10" width="1" height="1" fill="#8f63b8"/>
+<rect x="13" y="10" width="1" height="1" fill="#7149a5"/>
+<rect x="14" y="10" width="1" height="1" fill="#7149a5"/>
+<rect x="15" y="10" width="1" height="1" fill="#321b4f"/>
+<rect x="0" y="11" width="1" height="1" fill="#321b4f"/>
+<rect x="1" y="11" width="1" height="1" fill="#7149a5"/>
+<rect x="2" y="11" width="1" height="1" fill="#7149a5"/>
+<rect x="3" y="11" width="1" height="1" fill="#8f63b8"/>
+<rect x="4" y="11" width="1" height="1" fill="#8f63b8"/>
+<rect x="5" y="11" width="1" height="1" fill="#8f63b8"/>
+<rect x="6" y="11" width="1" height="1" fill="#8f63b8"/>
+<rect x="7" y="11" width="1" height="1" fill="#8f63b8"/>
+<rect x="8" y="11" width="1" height="1" fill="#8f63b8"/>
+<rect x="9" y="11" width="1" height="1" fill="#8f63b8"/>
+<rect x="10" y="11" width="1" height="1" fill="#8f63b8"/>
+<rect x="11" y="11" width="1" height="1" fill="#7149a5"/>
+<rect x="12" y="11" width="1" height="1" fill="#7149a5"/>
+<rect x="13" y="11" width="1" height="1" fill="#7149a5"/>
+<rect x="14" y="11" width="1" height="1" fill="#7149a5"/>
+<rect x="15" y="11" width="1" height="1" fill="#321b4f"/>
+<rect x="1" y="12" width="1" height="1" fill="#321b4f"/>
+<rect x="2" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="3" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="4" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="5" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="6" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="7" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="8" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="9" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="10" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="11" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="12" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="13" y="12" width="1" height="1" fill="#7149a5"/>
+<rect x="14" y="12" width="1" height="1" fill="#321b4f"/>
+<rect x="2" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="3" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="4" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="5" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="6" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="7" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="8" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="9" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="10" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="11" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="12" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="13" y="13" width="1" height="1" fill="#321b4f"/>
+<rect x="14" y="13" width="1" height="1" fill="#321b4f"/>
+</svg><div class="game-title-depth">桌面史莱姆</div><div style="font-size:0.7rem;">像素宠物·会走路变色生崽</div><a href="https://github.com/bailidashi/slime-army" target="_blank" class="game-link-depth">了解详情 →</a></div>
+          <div class="game-card-depth"><span class="game-icon-depth"><i class="fab fa-github"></i></span><div class="game-title-depth">GitHub</div><div style="font-size:0.7rem;">开源学习记录</div><a href="https://github.com/bailidashi" target="_blank" class="game-link-depth">访问主页 →</a></div>
+        </div>
+      </div>
+    `,
+    tools: `
+      <div class="page-card">
+        <div class="page-title">🧰 心智兵工厂</div>
+        <div class="section-sub">开发 · 设计 · AI · 效率工具链</div>
+        <div class="tools-tabs-depth" id="toolTabsDepth">
+          <button class="tab-depth active" data-cat="dev">开发</button>
+          <button class="tab-depth" data-cat="design">设计</button>
+          <button class="tab-depth" data-cat="ai">AI</button>
+          <button class="tab-depth" data-cat="prod">效率</button>
+          <button class="tab-depth" data-cat="learn">学习</button>
+        </div>
+        <div id="toolGridDepth" class="tool-grid-depth"></div>
+      </div>
+    `,
+    comments: `
+      <div class="page-card">
+        <div class="page-title">📌 航行日志 · 留言区</div>
+        <div class="comments-wrap-depth">
+          <div id="cusdis_thread"
+               data-host="https://cusdis.com"
+               data-app-id="f86b717c-f4a3-4b29-be61-42c62e2a254e"
+               data-page-id="bailidashi-home"
+               data-page-url="https://bailidashi.github.io"
+               data-page-title="百裏 · 持久迭代"
+               data-theme="light">
+          </div>
+          <script async defer src="https://cusdis.com/js/cusdis.es.js"><\/script>
+        </div>
+      </div>
+    `,
+    contact: `
+      <div class="page-card">
+        <div class="page-title">✉️ 持续迭代 · 保持连接</div>
+        <div class="contact-depth">
+          <a href="mailto:3154997545@qq.com" class="contact-item-depth"><i class="far fa-envelope"></i> 3154997545@qq.com</a>
+          <a href="https://github.com/bailidashi" target="_blank" class="contact-item-depth"><i class="fab fa-github"></i> GitHub</a>
+          <a href="https://space.bilibili.com/514882301" target="_blank" class="contact-item-depth"><i class="fab fa-bilibili"></i> B站主页</a>
+          <span class="contact-item-depth"><i class="fas fa-map-marker-alt"></i> 重庆 · 迭代中</span>
+        </div>
+        <div class="footer-depth">
+          <code>&lt;/&gt;</code> 景深毛玻璃 · 滑动翻页 | 浅绿清新 · 独立页面<br>
+          © 2025 bailidashi · 学无止境 · 无终版本
+        </div>
+      </div>
+    `
+  };
+
+  // 页面顺序数组
+  const pageOrder = ['intro', 'skills', 'aiskills', 'games', 'tools', 'comments', 'contact'];
+  let currentIndex = 0;          // 当前页面索引
+  let isScrolling = false;        // 防止滚动事件循环触发
+  let scrollTimeout = null;
+
+  // 获取DOM元素
+  const pagesContainer = document.getElementById('pagesContainer');
+  const navItems = document.querySelectorAll('.nav-depth-item');
+  
+  // 构建所有页面 (scroll-snap结构)
+  function buildPages() {
+    pagesContainer.innerHTML = '';
+    pageOrder.forEach(pageId => {
+      const pageDiv = document.createElement('div');
+      pageDiv.className = 'page-snap';
+      pageDiv.setAttribute('data-page-id', pageId);
+      pageDiv.innerHTML = pagesContent[pageId];
+      pagesContainer.appendChild(pageDiv);
+    });
+  }
+  
+  // 渲染指定页面索引 (滚动到对应页)
+  function scrollToPage(index, smooth = true) {
+    if (index < 0 || index >= pageOrder.length) return;
+    const targetPage = pagesContainer.children[index];
+    if (targetPage) {
+      targetPage.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant', block: 'start' });
+      // 更新导航高亮
+      updateActiveNav(pageOrder[index]);
+      currentIndex = index;
+    }
+  }
+  
+  // 更新左侧导航高亮
+  function updateActiveNav(pageId) {
+    navItems.forEach(item => {
+      const pg = item.getAttribute('data-page');
+      if (pg === pageId) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
       }
     });
-  }, { threshold: 0.4 });
-  sections.forEach(s => observer.observe(s));
-
-  // 滚动进度条
-  const fill = document.getElementById('progressFill');
-  const container = document.querySelector('.scroll-container');
-  function updateProgress() {
-    const st = container.scrollTop;
-    const maxScroll = container.scrollHeight - window.innerHeight;
-    fill.style.height = `${Math.min(1, st / maxScroll) * 100}%`;
   }
-  container.addEventListener('scroll', updateProgress);
-  updateProgress();
-
-  // 返回顶部按钮
-  const backBtn = document.querySelector('.back-to-top');
-  container.addEventListener('scroll', () => {
-    if(container.scrollTop > window.innerHeight) backBtn.classList.add('show');
-    else backBtn.classList.remove('show');
-  });
-  backBtn.addEventListener('click', () => container.scrollTo({ top: 0, behavior: 'smooth' }));
-
-  // 工具箱数据 (保留原内容)
-  const toolboxData = {
-    dev:[{icon:'📦',title:'GitHub',desc:'全球最大代码托管平台',tags:['代码托管','开源'],url:'https://github.com'},{icon:'🔗',title:'Vercel',desc:'前端部署与 CDN',tags:['部署','前端'],url:'https://vercel.com'},{icon:'⚡',title:'npm',desc:'Node.js 包管理器',tags:['包管理','Node.js'],url:'https://www.npmjs.com'},{icon:'🌐',title:'MDN',desc:'权威 Web 文档',tags:['文档','Web'],url:'https://developer.mozilla.org'},{icon:'🔍',title:'Stack Overflow',desc:'程序员问答社区',tags:['问答','社区'],url:'https://stackoverflow.com'}],
-    design:[{icon:'🎨',title:'Figma',desc:'UI 设计协作工具',tags:['UI设计','协作'],url:'https://www.figma.com'},{icon:'🌈',title:'Coolors',desc:'配色方案生成',tags:['配色','灵感'],url:'https://coolors.co'},{icon:'🖼️',title:'Unsplash',desc:'高质量免费图片',tags:['图片','免费'],url:'https://unsplash.com'}],
-    ai:[{icon:'🤖',title:'ChatGPT',desc:'OpenAI 对话模型',tags:['AI对话','创作'],url:'https://chat.openai.com'},{icon:'🧠',title:'Claude',desc:'Anthropic AI 助手',tags:['AI助手','分析'],url:'https://claude.ai'},{icon:'🎯',title:'Hugging Face',desc:'AI 模型库',tags:['模型库','开源'],url:'https://huggingface.co'}],
-    prod:[{icon:'💻',title:'VSCode',desc:'开源编辑器',tags:['编辑器','开源'],url:'https://code.visualstudio.com'},{icon:'📝',title:'Notion',desc:'全能笔记',tags:['笔记','知识库'],url:'https://www.notion.so'},{icon:'🎥',title:'ScreenToGif',desc:'录屏 GIF 制作',tags:['录屏','GIF'],url:'https://www.screentogif.com'}],
-    learn:[{icon:'📘',title:'菜鸟教程',desc:'中文编程教程',tags:['教程','中文'],url:'https://www.runoob.com'},{icon:'🎓',title:'B站',desc:'免费教学视频',tags:['视频','教学'],url:'https://www.bilibili.com'},{icon:'🏆',title:'LeetCode',desc:'算法题库',tags:['算法','面试'],url:'https://leetcode.com'}]
+  
+  // 监听滚动结束，根据当前可视区域页面更新索引和导航
+  function handleScrollEnd() {
+    if (!pagesContainer) return;
+    const children = Array.from(pagesContainer.children);
+    const scrollTop = pagesContainer.scrollTop;
+    const containerHeight = pagesContainer.clientHeight;
+    let bestIndex = 0;
+    let minDistance = Infinity;
+    children.forEach((child, idx) => {
+      const offsetTop = child.offsetTop;
+      const distance = Math.abs(scrollTop - offsetTop);
+      if (distance < minDistance) {
+        minDistance = distance;
+        bestIndex = idx;
+      }
+    });
+    if (bestIndex !== currentIndex) {
+      currentIndex = bestIndex;
+      const pageId = pageOrder[currentIndex];
+      updateActiveNav(pageId);
+    }
+  }
+  
+  // 监听滚动事件 (防抖)
+  function onScroll() {
+    if (scrollTimeout) clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      handleScrollEnd();
+    }, 150);
+  }
+  
+  // 初始化: 构建页面、绑定滚动监听、绑定左侧导航点击
+  function init() {
+    buildPages();
+    pagesContainer.addEventListener('scroll', onScroll);
+    // 初始定位第一页
+    scrollToPage(0, false);
+    
+    // 左侧导航点击事件
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        const targetPage = item.getAttribute('data-page');
+        const targetIndex = pageOrder.indexOf(targetPage);
+        if (targetIndex !== -1) {
+          scrollToPage(targetIndex, true);
+        }
+      });
+    });
+    
+    // 处理工具箱选项卡动态渲染 (因为tools页面是动态插入的)
+    // 使用 MutationObserver 监听 tools 页面的插入并初始化选项卡
+    const observer = new MutationObserver(() => {
+      const toolsTabs = document.getElementById('toolTabsDepth');
+      if (toolsTabs && !toolsTabs.hasAttribute('data-initialized')) {
+        toolsTabs.setAttribute('data-initialized', 'true');
+        initToolsTab();
+      }
+    });
+    observer.observe(pagesContainer, { childList: true, subtree: true });
+    // 如果页面刚加载时tools已存在也初始化
+    setTimeout(() => {
+      if (document.getElementById('toolTabsDepth')) initToolsTab();
+    }, 100);
+  }
+  
+  // 工具箱数据渲染
+  const toolboxMap = {
+    dev: [{icon:'📦',title:'GitHub',desc:'全球最大代码托管平台',tags:['代码托管','开源'],url:'https://github.com'},{icon:'🔗',title:'Vercel',desc:'前端部署与 CDN',tags:['部署','前端'],url:'https://vercel.com'},{icon:'⚡',title:'npm',desc:'Node.js 包管理器',tags:['包管理','Node.js'],url:'https://www.npmjs.com'},{icon:'🌐',title:'MDN',desc:'权威 Web 文档',tags:['文档','Web'],url:'https://developer.mozilla.org'},{icon:'🔍',title:'Stack Overflow',desc:'程序员问答社区',tags:['问答','社区'],url:'https://stackoverflow.com'}],
+    design: [{icon:'🎨',title:'Figma',desc:'UI 设计协作工具',tags:['UI设计','协作'],url:'https://www.figma.com'},{icon:'🌈',title:'Coolors',desc:'配色方案生成',tags:['配色','灵感'],url:'https://coolors.co'},{icon:'🖼️',title:'Unsplash',desc:'高质量免费图片',tags:['图片','免费'],url:'https://unsplash.com'}],
+    ai: [{icon:'🤖',title:'ChatGPT',desc:'OpenAI 对话模型',tags:['AI对话','创作'],url:'https://chat.openai.com'},{icon:'🧠',title:'Claude',desc:'Anthropic AI 助手',tags:['AI助手','分析'],url:'https://claude.ai'},{icon:'🎯',title:'Hugging Face',desc:'AI 模型库',tags:['模型库','开源'],url:'https://huggingface.co'}],
+    prod: [{icon:'💻',title:'VSCode',desc:'开源编辑器',tags:['编辑器','开源'],url:'https://code.visualstudio.com'},{icon:'📝',title:'Notion',desc:'全能笔记',tags:['笔记','知识库'],url:'https://www.notion.so'},{icon:'🎥',title:'ScreenToGif',desc:'录屏 GIF 制作',tags:['录屏','GIF'],url:'https://www.screentogif.com'}],
+    learn: [{icon:'📘',title:'菜鸟教程',desc:'中文编程教程',tags:['教程','中文'],url:'https://www.runoob.com'},{icon:'🎓',title:'B站',desc:'免费教学视频',tags:['视频','教学'],url:'https://www.bilibili.com'},{icon:'🏆',title:'LeetCode',desc:'算法题库',tags:['算法','面试'],url:'https://leetcode.com'}]
   };
-  function renderToolbox(cat) {
-    const grid = document.getElementById('toolboxGrid');
-    const list = toolboxData[cat] || [];
-    grid.innerHTML = list.map(it => `
-      <div class="tool-card">
-        <div class="tool-card__top"><span>${it.icon}</span><span class="tool-card__title">${it.title}</span></div>
-        <p class="tool-card__desc">${it.desc}</p>
-        <div style="display:flex; gap:0.3rem; flex-wrap:wrap; margin:0.4rem 0;">${it.tags.map(t => `<span style="background:#eef2ff; padding:0.1rem 0.5rem; border-radius:20px; font-size:0.65rem;">${t}</span>`).join('')}</div>
-        <a href="${it.url}" target="_blank" rel="noopener" style="color:#3B82F6; font-size:0.75rem;">打开 →</a>
+  function renderTools(cat) {
+    const grid = document.getElementById('toolGridDepth');
+    if (!grid) return;
+    const items = toolboxMap[cat] || [];
+    grid.innerHTML = items.map(tool => `
+      <div class="tool-card-depth">
+        <div class="tool-top-depth"><span style="font-size:1.5rem;">${tool.icon}</span><span class="tool-title-depth">${tool.title}</span></div>
+        <div class="tool-desc-depth">${tool.desc}</div>
+        <div class="tag-group-depth">${tool.tags.map(t => `<span class="tag-depth">${t}</span>`).join('')}</div>
+        <a href="${tool.url}" target="_blank" style="color:#2F855A; font-size:0.7rem; text-decoration:none; font-weight:500;">打开 →</a>
       </div>
     `).join('');
   }
-  renderToolbox('dev');
-  document.querySelectorAll('.tools-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tools-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      renderToolbox(tab.dataset.cat);
-    });
+  function initToolsTab() {
+    const tabs = document.querySelectorAll('#toolTabsDepth .tab-depth');
+    if (tabs.length) {
+      renderTools('dev');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          renderTools(tab.getAttribute('data-cat'));
+        });
+      });
+    }
+  }
+  
+  // 返回顶部按钮逻辑 (针对滑动容器)
+  const backBtn = document.getElementById('backToTopDepth');
+  function toggleBackBtn() {
+    if (pagesContainer.scrollTop > 500) backBtn.classList.add('show');
+    else backBtn.classList.remove('show');
+  }
+  pagesContainer.addEventListener('scroll', () => {
+    toggleBackBtn();
+    onScroll();
   });
+  backBtn.addEventListener('click', () => {
+    pagesContainer.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  
+  // 启动
+  init();
 </script>
 </body>
 </html>
