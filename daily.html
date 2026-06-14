@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="百裏日常">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23222' width='100' height='100' rx='20'/><text x='50' y='68' text-anchor='middle' font-size='50'>📋</text></svg>">
+<title>百裏 · 日常</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#0f0f0f;color:#eee;
+  font-family:-apple-system,'Microsoft YaHei',sans-serif;
+  min-height:100vh;display:flex;justify-content:center;
+  padding:16px;-webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+}
+.app{width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px}
+
+/* 头部 */
+.header{text-align:center;padding:14px 0 2px}
+.header h1{font-size:24px;font-weight:800}
+.header .date{font-size:12px;color:#888;margin-top:2px}
+
+/* 统计条 */
+.stats{display:flex;gap:8px}
+.stat{background:#1a1a1a;border-radius:10px;padding:12px;text-align:center;flex:1}
+.stat .val{font-size:24px;font-weight:800;color:#5B8C5A}
+.stat .lbl{font-size:10px;color:#888}
+
+/* ===== 日历 ===== */
+.cal-wrap{background:#1a1a1a;border-radius:12px;padding:12px}
+.cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal-header .mon{font-size:15px;font-weight:700}
+.cal-header button{
+  background:#2a2a2a;border:none;color:#ccc;font-size:16px;
+  width:30px;height:30px;border-radius:50%;cursor:pointer
+}
+.cal-header button:active{background:#444}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-day-head{font-size:10px;color:#666;text-align:center;padding:4px 0}
+.cal-cell{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  border-radius:50%;font-size:12px;cursor:pointer;background:#0f0f0f;
+  color:#555;transition:all .15s
+}
+.cal-cell.full{background:#2d5a2d;color:#8f8}
+.cal-cell.part{background:#3d3d1a;color:#cc8}
+.cal-cell.today{border:2px solid #C4A45A}
+.cal-cell:active{transform:scale(.9)}
+
+/* 图例 */
+.legend{display:flex;gap:14px;justify-content:center;font-size:10px;color:#888;margin-top:6px}
+.legend span{display:flex;align-items:center;gap:4px}
+.legend .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.legend .dot.g{background:#2d5a2d}
+.legend .dot.y{background:#3d3d1a}
+.legend .dot.n{background:#0f0f0f;border:1px solid #333}
+
+/* 任务列表 */
+.tasks{display:flex;flex-direction:column;gap:6px}
+.task{
+  background:#1a1a1a;border:1.5px solid #2a2a2a;border-radius:10px;
+  padding:14px;display:flex;align-items:center;gap:12px;
+  cursor:pointer;transition:all .15s;font-size:15px
+}
+.task:active{background:#222}
+.task.done{border-color:#5B8C5A33;opacity:.5}
+.task.done .label{text-decoration:line-through;color:#666}
+.task .time{font-size:11px;color:#5B8C5A;min-width:36px;font-weight:600}
+.task .label{flex:1}
+.task .check{
+  width:24px;height:24px;border-radius:50%;border:2px solid #444;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;flex-shrink:0;transition:all .2s
+}
+.task.done .check{background:#5B8C5A;border-color:#5B8C5A}
+
+/* 学习资源 */
+.resources{background:#1a1a1a;border-radius:12px;padding:14px}
+.resources h3{font-size:14px;margin-bottom:8px;color:#5B8C5A}
+.resources .cat{font-size:11px;color:#C4A45A;margin:8px 0 2px}
+.resources a{
+  display:block;color:#aaa;text-decoration:none;padding:5px 0;
+  font-size:12px;border-bottom:1px solid #1f1f1f
+}
+.resources a:active{color:#fff}
+
+.footer{text-align:center;padding:16px;color:#444;font-size:10px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1 id="title">📋 百裏日常</h1>
+    <div class="date" id="dateLabel"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="val" id="streakDays">0</div><div class="lbl">连续天数</div></div>
+    <div class="stat"><div class="val"><span id="todayRate">0%</span></div><div class="lbl">今日完成</div></div>
+    <div class="stat"><div class="val" id="weekScore">0</div><div class="lbl">本周满分</div></div>
+  </div>
+
+  <!-- 日历 -->
+  <div class="cal-wrap">
+    <div class="cal-header">
+      <button onclick="prevMonth()">◀</button>
+      <span class="mon" id="calMonth"></span>
+      <button onclick="nextMonth()">▶</button>
+    </div>
+    <div class="cal-grid" id="calGrid">
+      <div class="cal-day-head">日</div><div class="cal-day-head">一</div><div class="cal-day-head">二</div><div class="cal-day-head">三</div><div class="cal-day-head">四</div><div class="cal-day-head">五</div><div class="cal-day-head">六</div>
+    </div>
+    <div class="legend">
+      <span><i class="dot g"></i>全部完成</span>
+      <span><i class="dot y"></i>部分完成</span>
+      <span><i class="dot n"></i>未打卡</span>
+    </div>
+  </div>
+
+  <!-- 任务 -->
+  <div class="tasks" id="taskList"></div>
+
+  <!-- 学习资源 -->
+  <div class="resources">
+    <h3>📚 学习资源</h3>
+    <div class="cat">🇬🇧 英语</div>
+    <a href="https://www.ted.com" target="_blank">🎤 TED 英语演讲</a>
+    <a href="https://youglish.com" target="_blank">🔊 YouGlish 真人发音</a>
+    <a href="https://www.bbc.co.uk/learningenglish" target="_blank">📻 BBC Learning English</a>
+    <div class="cat">🔧 工科 / 编程</div>
+    <a href="https://search.bilibili.com/all?keyword=C%E8%AF%AD%E8%A8%80%20%E7%BF%81%E5%87%AF" target="_blank">📺 B站搜 C语言</a>
+    <a href="https://search.bilibili.com/all?keyword=STM32%20%E5%85%A5%E9%97%A8" target="_blank">📺 B站搜 STM32</a>
+    <a href="https://search.bilibili.com/all?keyword=SolidWorks%20%E6%95%99%E7%A8%8B" target="_blank">📺 B站搜 SolidWorks</a>
+    <a href="https://www.icourse163.org" target="_blank">🏫 中国大学MOOC</a>
+    <div class="cat">🤖 AI / 效率</div>
+    <a href="https://claude.ai" target="_blank">🧠 Claude</a>
+    <a href="https://github.com" target="_blank">🐙 GitHub</a>
+    <a href="https://ollama.com/search" target="_blank">🦙 Ollama 模型</a>
+  </div>
+
+  <div class="footer">每天一小步 · 拍档在看着你 😺</div>
+</div>
+
+<script>
+const HABITS = [
+  { time:'7:00',  icon:'⏰', label:'闹钟响了就下床' },
+  { time:'7:15',  icon:'🥣', label:'吃早饭' },
+  { time:'8:00',  icon:'📖', label:'上课，手机只用来学习' },
+  { time:'12:00', icon:'🍚', label:'午饭，不边吃边刷视频' },
+  { time:'13:00', icon:'💤', label:'午休30分钟，手机静音' },
+  { time:'17:00', icon:'⚽', label:'操场走两圈（15分钟）' },
+  { time:'19:00', icon:'💻', label:'学两小时，手机扔一边' },
+  { time:'21:00', icon:'🚿', label:'洗澡' },
+  { time:'22:00', icon:'📵', label:'关娱乐APP，手机留闹钟' },
+  { time:'22:30', icon:'😴', label:'关灯睡觉' },
+];
+
+const KEY = 'dl';
+
+function ds(y,m,d){ return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+
+function getComp() {
+  try { const d=JSON.parse(localStorage.getItem(KEY)||'{}'); return d; } catch(e) { return {}; }
+}
+function saveComp(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
+
+function toggle(i) {
+  const c = getComp();
+  const td = ds(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate());
+  if(!c[td]) c[td] = {};
+  if(c[td][i]) delete c[td][i]; else c[td][i]=true;
+  saveComp(c); render();
+}
+
+let calY, calM;
+function initCal() {
+  const n = new Date();
+  calY = n.getFullYear(); calM = n.getMonth()+1;
+}
+function prevMonth() { calM--; if(calM<1){calM=12;calY--;} render(); }
+function nextMonth() { calM++; if(calM>12){calM=1;calY++;} render(); }
+
+function render() {
+  const c = getComp();
+  const n = new Date();
+  const y = n.getFullYear(), m = n.getMonth()+1, d = n.getDate();
+  const td = ds(y,m,d);
+
+  // 日期
+  const wn = ['日','一','二','三','四','五','六'];
+  document.getElementById('dateLabel').textContent = `${y}年${m}月${d}日 星期${wn[n.getDay()]}`;
+
+  // 今日任务
+  const todayItems = c[td] || {};
+  const doneCount = Object.keys(todayItems).length;
+  const rate = HABITS.length ? Math.round(doneCount/HABITS.length*100) : 0;
+  document.getElementById('todayRate').textContent = rate + '%';
+
+  // 连续
+  let streak = 0;
+  for(let i=0;i<365;i++) {
+    const dt = new Date(n); dt.setDate(dt.getDate()-i);
+    const s = ds(dt.getFullYear(),dt.getMonth()+1,dt.getDate());
+    if(c[s] && Object.keys(c[s]).length >= HABITS.length) streak++; else break;
+  }
+  document.getElementById('streakDays').textContent = streak;
+
+  // 本周满分
+  let wc = 0;
+  for(let i=0;i<7;i++) {
+    const dt = new Date(n); dt.setDate(dt.getDate()-dt.getDay()+i);
+    const s = ds(dt.getFullYear(),dt.getMonth()+1,dt.getDate());
+    if(c[s] && Object.keys(c[s]).length >= HABITS.length) wc++;
+  }
+  document.getElementById('weekScore').textContent = wc + '/7';
+
+  // 标题
+  document.getElementById('title').textContent =
+    doneCount >= HABITS.length ? '🎉 全部完成！' : '📋 百裏日常';
+
+  // 任务列表
+  const tl = document.getElementById('taskList');
+  tl.innerHTML = '';
+  HABITS.forEach((h,i) => {
+    const done = !!todayItems[i];
+    const div = document.createElement('div');
+    div.className = 'task' + (done?' done':'');
+    div.onclick = () => toggle(i);
+    div.innerHTML = `<span class="time">${h.time}</span><span style="font-size:16px">${h.icon}</span><span class="label">${h.label}</span><span class="check">${done?'✓':''}</span>`;
+    tl.appendChild(div);
+  });
+
+  // 日历
+  document.getElementById('calMonth').textContent = `${calY}年${calM}月`;
+  const grid = document.getElementById('calGrid');
+  // 保留星期头
+  grid.innerHTML = '<div class="cal-day-head">日</div><div class="cal-day-head">一</div><div class="cal-day-head">二</div><div class="cal-day-head">三</div><div class="cal-day-head">四</div><div class="cal-day-head">五</div><div class="cal-day-head">六</div>';
+
+  const firstDay = new Date(calY, calM-1, 1).getDay();
+  const totalDays = new Date(calY, calM, 0).getDate();
+
+  // 填充前空白
+  for(let i=0;i<firstDay;i++) grid.appendChild(document.createElement('div'));
+
+  // 日期格
+  for(let dd=1;dd<=totalDays;dd++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell';
+    cell.textContent = dd;
+    const s = ds(calY, calM, dd);
+    const items = c[s];
+    if(items) {
+      if(Object.keys(items).length >= HABITS.length) cell.classList.add('full');
+      else if(Object.keys(items).length > 0) cell.classList.add('part');
+    }
+    if(s === td) cell.classList.add('today');
+    grid.appendChild(cell);
+  }
+}
+
+initCal(); render();
+</script>
+</body>
+</html>
