@@ -402,45 +402,143 @@ body::after {
 
 /* ===== 打印：交给老师的就是这张纸 ===== */
 @media print {
-  @page { margin: 14mm; }
+  @page { size: A4; margin: 11mm 13mm; }
+
   body {
     background: #fff !important;
     color: #111;
-    font-size: 10.5pt;
-    line-height: 1.55;
+    font-size: 9.6pt;
+    line-height: 1.42;
   }
   body::before, body::after { display: none !important; }
   .topbar, .print-btn, .foot { display: none !important; }
+
   .wrap {
     display: block;
     max-width: none;
     padding: 0;
+    margin: 0;
   }
-  .profile, .card {
+  /* flex 容器在分页时不好断开，打印时改成普通块流 */
+  .main {
+    display: block;
+    min-width: 0;
+  }
+
+  /* 名片压成横向表头 */
+  .profile {
+    display: grid;
+    grid-template-columns: 24mm 1fr;
+    column-gap: 5mm;
+    align-items: center;
     background: #fff !important;
     backdrop-filter: none !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 0 !important;
-    margin-bottom: 10mm;
     border-radius: 0;
-  }
-  .profile {
-    display: flex;
-    align-items: center;
-    gap: 6mm;
+    padding: 0 0 3.5mm 0 !important;
+    margin: 0 0 5mm 0;
+    border-bottom: 1.6pt solid #2F855A !important;
     text-align: left;
-    border-bottom: 2px solid #2F855A !important;
-    padding-bottom: 5mm !important;
+    position: static;
   }
-  .avatar { width: 26mm; height: 26mm; border: 1px solid #2F855A; box-shadow: none; }
+  .avatar {
+    grid-row: span 3;
+    width: 24mm; height: 24mm;
+    border: 0.8pt solid #2F855A;
+    box-shadow: none;
+    margin: 0;
+  }
+  .profile h1 { font-size: 15pt; line-height: 1.15; }
+  .profile .pinyin { font-size: 7.5pt; letter-spacing: 0.12em; }
+  .profile .role {
+    display: inline-block;
+    justify-self: start;
+    margin-top: 1mm;
+    font-size: 8.5pt;
+    padding: 0.4mm 2.5mm;
+    background: #eef6f1 !important;
+    border: 0.5pt solid #b9d6c4;
+    color: #1E4A2F;
+  }
   .profile-divider { display: none; }
-  .contact-list { flex-direction: row; flex-wrap: wrap; gap: 1.5mm 6mm; font-size: 9pt; }
-  .project { break-inside: avoid; page-break-inside: avoid; }
-  .card { break-inside: avoid; }
-  a { color: #111 !important; text-decoration: none; }
-  .chip { background: #f3f7f4 !important; border: 1px solid #cfe0d5 !important; }
+  .contact-list {
+    grid-column: 2;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.6mm 4.5mm;
+    font-size: 8.4pt;
+    margin-top: 1.2mm;
+  }
+  .contact-list i { width: auto; font-size: 8pt; }
+
+  /* 区块紧凑 */
+  .card {
+    background: #fff !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0;
+    padding: 0 !important;
+    margin: 0 0 4.5mm 0;
+  }
+  .sec-head { margin-bottom: 2mm; gap: 2mm; }
+  .sec-head h2 { font-size: 11.5pt; color: #1E4A2F; }
+  .sec-head .num { font-size: 7.5pt; }
   .sec-head .line { background: #2F855A; }
+
+  .intro-text { font-size: 9.2pt; }
+  .quick-tags { gap: 1.2mm; margin-top: 1.8mm; }
+  .quick-tags span {
+    font-size: 7.8pt;
+    padding: 0.4mm 2.4mm;
+    background: #f2f8f4 !important;
+    border: 0.5pt solid #cfe0d5;
+    color: #1E4A2F;
+  }
+
+  .project {
+    padding: 2.2mm 0;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .project:first-of-type { padding-top: 0; }
+  .project-top { margin-bottom: 1mm; gap: 2mm; }
+  .project h3 { font-size: 10pt; }
+  .project .badge {
+    font-size: 7pt;
+    padding: 0 1.8mm;
+    background: #eef6f1 !important;
+    border: 0.5pt solid #c9dccf;
+    color: #1E4A2F;
+  }
+  .project p { font-size: 8.9pt; }
+  .project ul { margin-top: 1mm; padding-left: 4.5mm; }
+  .project li { font-size: 8.6pt; margin-bottom: 0; }
+  .project .links { margin-top: 1mm; gap: 4mm; }
+  .project .links a { font-size: 8.2pt; color: #1E4A2F !important; }
+
+  .skill-group { margin-bottom: 2.5mm; }
+  .skill-label { font-size: 8.2pt; margin-bottom: 1mm; }
+  .chips { gap: 1.2mm; }
+  .chip {
+    font-size: 8.2pt;
+    padding: 0.5mm 2.2mm;
+    background: #f2f8f4 !important;
+    border: 0.5pt solid #cfe0d5;
+    border-radius: 6px;
+  }
+
+  .timeline { padding-left: 0; }
+  .timeline::before, .tl-item::before { display: none; }
+  .tl-item { padding-bottom: 2.2mm; }
+  .tl-item h4 { font-size: 9.4pt; }
+  .tl-item .when { font-size: 7.6pt; }
+  .tl-item p { font-size: 8.6pt; }
+
+  a { color: #111 !important; text-decoration: none; }
+  section { break-inside: auto; }
+  .pb-before { break-before: page; page-break-before: always; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -584,7 +682,7 @@ body::after {
         </div>
       </div>
 
-      <div class="project">
+      <div class="project pb-before">
         <div class="project-top">
           <h3>像素小工具三件套</h3>
           <span class="badge">HTML5 Canvas · JavaScript</span>
@@ -610,8 +708,8 @@ body::after {
         </div>
         <p>零框架、零构建的静态站点，部署在 GitHub Pages，自己一行行写出来的。</p>
         <ul>
-          <li>毛玻璃视觉体系、响应式双栏布局、深色友好与打印样式</li>
-          <li>引导页支持滚动吸附翻页、工具分类 Tab、评论区按需加载</li>
+          <li>毛玻璃视觉体系、响应式双栏布局、打印样式（一键导出 A4 简历）</li>
+          <li>SEO 分享卡与图标、键盘可达性、无框架实现 Tab 切换与分页导航</li>
         </ul>
       </div>
     </section>
